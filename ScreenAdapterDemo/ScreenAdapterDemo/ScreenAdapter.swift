@@ -77,8 +77,13 @@ class ScreenAdapter {
     
     // 初始化计算屏幕宽高，得到对应的屏幕规格
     fileprivate init() {
-        let screenWidth: CGFloat = ceil(UIScreen.main.bounds.size.width)
-        let screenHeight: CGFloat = ceil(UIScreen.main.bounds.size.height)
+        var screenWidth: CGFloat = ceil(UIScreen.main.bounds.size.width)
+        var screenHeight: CGFloat = ceil(UIScreen.main.bounds.size.height)
+        if screenWidth > screenHeight {
+            let tmp: CGFloat = screenWidth
+            screenWidth = screenHeight
+            screenHeight = tmp
+        }
         screenSpecs = .unknown
         switch screenWidth {
         case 320:
