@@ -21,19 +21,28 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tabBarController?.delegate = alphaTransitionDelegate
+        
         setupSubviews()
     }
 
     fileprivate func setupSubviews() {
         
+        self.navigationItem.title = "Home"
+        
         let buttonSize = CGSize(width: 200, height: 50)
         let buttonPadding: CGFloat = 30
-        // AlphaTransition Button
+        // AlphaTransition Present Button
         var buttonFrame = CGRect(x: (screenWidth - buttonSize.width) * 0.5,
-                                 y: buttonPadding,
+                                 y: buttonPadding + 64,
                                  width: buttonSize.width,
                                  height: buttonSize.height)
-        addAlphaTransitionButton(frame: buttonFrame)
+        addAlphaTransitionPresentButton(frame: buttonFrame)
+        
+        // AlphaTransition Push Button
+        buttonFrame.origin.y += buttonSize.height + buttonPadding
+        addAlphaTransitionPushButton(frame: buttonFrame)
         
         // CardTransition Button
         buttonFrame.origin.y += buttonSize.height + buttonPadding
@@ -49,7 +58,7 @@ class ViewController: UIViewController {
 // MARK: - AlphaTransition
 extension ViewController {
     
-    fileprivate func addAlphaTransitionButton(frame: CGRect) {
+    fileprivate func addAlphaTransitionPresentButton(frame: CGRect) {
         let button = UIButton(type: .custom)
         button.frame = frame
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
@@ -60,12 +69,30 @@ extension ViewController {
         self.view.addSubview(button)
     }
     
+    fileprivate func addAlphaTransitionPushButton(frame: CGRect) {
+        let button = UIButton(type: .custom)
+        button.frame = frame
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.setTitleColor(UIColor.red, for: .normal)
+        button.setTitle("Push AlphaTransition", for: .normal)
+        button.backgroundColor = UIColor.darkGray
+        button.addTarget(self, action: #selector(ViewController.pushToAlphaTransitionViewControler), for: .touchUpInside)
+        self.view.addSubview(button)
+    }
+    
     func presentToAlphaTransitionViewControler() {
         
         let alphaVc = AlphaTransitionViewController()
         alphaVc.transitioningDelegate = alphaTransitionDelegate
         self.transitioningDelegate = alphaTransitionDelegate
         self.present(alphaVc, animated: true, completion: nil)
+    }
+    
+    func pushToAlphaTransitionViewControler() {
+        guard let navigationController = self.navigationController else { return }
+        let alphaVc = AlphaTransitionViewController()
+        navigationController.delegate = alphaTransitionDelegate
+        navigationController.pushViewController(alphaVc, animated: true)
     }
 }
 

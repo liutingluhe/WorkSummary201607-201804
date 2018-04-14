@@ -121,7 +121,9 @@ class RippleTransitionDelegate: NSObject, UIViewControllerTransitioningDelegate,
     }
 }
 
+// MARK: - CAAnimationDelegate
 extension RippleTransitionDelegate: CAAnimationDelegate {
+    /// 动画结束后调用
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         // 把 layer.mask 赋值为 nil，是为了释放动画图层
         if let transitionContext = self.transitionContext {

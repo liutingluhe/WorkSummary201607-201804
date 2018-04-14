@@ -17,6 +17,7 @@ class AlphaTransitionViewController: UIViewController {
     
     fileprivate func setupSubviews() {
         self.view.backgroundColor = UIColor.red
+        self.navigationItem.title = "Alpha"
         
         let titleLabel = UILabel(frame: self.view.bounds)
         titleLabel.text = "AlphaTransitionViewController"
@@ -25,6 +26,7 @@ class AlphaTransitionViewController: UIViewController {
         titleLabel.textAlignment = .center
         self.view.addSubview(titleLabel)
         
+        guard self.transitioningDelegate is AlphaTransitionDelegate else { return }
         let dismissButton = UIButton(type: .custom)
         dismissButton.frame.size = CGSize(width: 200, height: 50)
         dismissButton.center.x = self.view.center.x

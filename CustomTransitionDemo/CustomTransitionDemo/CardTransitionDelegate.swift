@@ -24,12 +24,13 @@ class CardTransitionDelegate: NSObject, UIViewControllerTransitioningDelegate, U
     
     /// 代理方法，返回处理 present 转场动画的对象
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.isPresent = true
+        // presented - 被弹出控制器，presenting - 根控制器(Navigation/Tab/View)，source - 源控制器
         // 因为使用了 overFullScreen，source 不会调用 viewWillDisappear 和 viewDidDisappear，这里手动触发
         source.viewWillDisappear(false)
         source.viewDidDisappear(false)
         self.source = source
         self.presented = presented
+        self.isPresent = true
         return self
     }
     
