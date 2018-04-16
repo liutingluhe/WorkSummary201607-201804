@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 // MARK: - 视图可配置协议
 public protocol ViewStyleConfigurable: class {
@@ -36,25 +37,26 @@ extension ViewStyleConfigurable {
 /// View 配置项
 class ViewConfiguration {
     
-    var backgroundColor: UIColor?
-    var borderWidth: CGFloat = 0
-    var borderColor: UIColor?
-    var cornerRadius: CGFloat = 0
-    var clipsToBounds: Bool = false
-    var contentMode: UIViewContentMode = .scaleToFill
-    var padding: UIEdgeInsets = .zero
-    var size: CGSize = .zero
+    lazy var backgroundColor: UIColor? = UIColor.clear
+    lazy var borderWidth: CGFloat = 0
+    lazy var borderColor: UIColor? = UIColor.clear
+    lazy var cornerRadius: CGFloat = 0
+    lazy var clipsToBounds: Bool = false
+    lazy var contentMode: UIViewContentMode = .scaleToFill
+    lazy var padding: UIEdgeInsets = .zero
+    lazy var size: CGSize = .zero
 }
 
 /// Label 配置项
 class LabelConfiguration: ViewConfiguration {
-    var numberOfLines: Int = 1
-    var textColor: UIColor?
-    var font: UIFont?
-    var textAlignment: NSTextAlignment = .left
-    var lineBreakMode: NSLineBreakMode = .byTruncatingTail
-    var lineSpacing: CGFloat = 0
-    var characterSpacing: CGFloat = 0
+    lazy var numberOfLines: Int = 1
+    lazy var textColor: UIColor? = UIColor.black
+    lazy var textBackgroundColor: UIColor? = UIColor.clear
+    lazy var font: UIFont? = UIFont.systemFont(ofSize: 14)
+    lazy var textAlignment: NSTextAlignment = .left
+    lazy var lineBreakMode: NSLineBreakMode = .byTruncatingTail
+    lazy var lineSpacing: CGFloat = 0
+    lazy var characterSpacing: CGFloat = 0
     
     // 属性表，用于属性字符串使用
     var attributes: [String: Any]? {
@@ -72,6 +74,9 @@ class LabelConfiguration: ViewConfiguration {
         if let textColor = self.textColor {
             attributes[NSForegroundColorAttributeName] = textColor
         }
+        if let textBackgroundColor = self.textBackgroundColor {
+            attributes[NSBackgroundColorAttributeName] = textBackgroundColor
+        }
         return attributes
     }
 }
@@ -86,14 +91,14 @@ class ButtonConfiguration: ViewConfiguration {
         var disabled: T?
     }
     
-    var titleColor = StateStyle<UIColor>()
-    var titleFont: UIFont?
-    var image = StateStyle<UIImage>()
-    var title = StateStyle<String>()
-    var backgroundImage = StateStyle<UIImage>()
-    var contentEdgeInsets: UIEdgeInsets = .zero
-    var imageEdgeInsets: UIEdgeInsets = .zero
-    var titleEdgeInsets: UIEdgeInsets = .zero
+    lazy var titleFont: UIFont = UIFont.systemFont(ofSize: 14)
+    lazy var titleColor = StateStyle<UIColor>()
+    lazy var image = StateStyle<UIImage>()
+    lazy var title = StateStyle<String>()
+    lazy var backgroundImage = StateStyle<UIImage>()
+    lazy var contentEdgeInsets: UIEdgeInsets = .zero
+    lazy var imageEdgeInsets: UIEdgeInsets = .zero
+    lazy var titleEdgeInsets: UIEdgeInsets = .zero
 }
 
 /// ImageView 配置项

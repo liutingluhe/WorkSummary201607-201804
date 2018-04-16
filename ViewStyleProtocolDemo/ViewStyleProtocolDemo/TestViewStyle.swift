@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SnapKit
 
 /// 样式配置基类，通过策略设计模式实现
 class TestViewStyle {
