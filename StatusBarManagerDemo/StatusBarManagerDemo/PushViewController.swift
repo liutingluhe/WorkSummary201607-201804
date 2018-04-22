@@ -17,14 +17,18 @@ class PushViewController: BasicViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.barStyle = .black
-        StatusBarManager.shared.style = .lightContent
+        self.navigationController?.navigationBar.backgroundColor = UIColor.black
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSFontAttributeName: UIFont.systemFont(ofSize: 14),
+            NSForegroundColorAttributeName: UIColor.white
+        ]
     }
     
     fileprivate func setupSubviews() {
         
         self.view.backgroundColor = UIColor.black
         self.navigationItem.title = "Push"
+        StatusBarManager.shared.style = .lightContent
     }
 
 }

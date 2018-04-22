@@ -17,15 +17,18 @@ class ViewController: BasicViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.barStyle = .default
-        StatusBarManager.shared.style = .default
+        self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSFontAttributeName: UIFont.systemFont(ofSize: 14),
+            NSForegroundColorAttributeName: UIColor.black
+        ]
     }
     
     fileprivate func setupSubviews() {
         
         self.view.backgroundColor = UIColor.white
         self.navigationItem.title = "Home"
-        self.navigationController?.navigationBar.isTranslucent = false
+        StatusBarManager.shared.style = .default
         
         let button = UIButton(type: .system)
         button.frame = self.view.bounds

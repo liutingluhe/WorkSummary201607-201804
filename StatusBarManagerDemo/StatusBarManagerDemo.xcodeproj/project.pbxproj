@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		322289D4208CB89200550FF5 /* BasicTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322289D3208CB89200550FF5 /* BasicTabBarController.swift */; };
 		C83DA2C1207DF7FB0051F3CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83DA2C0207DF7FB0051F3CE /* AppDelegate.swift */; };
 		C83DA2C3207DF7FB0051F3CE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83DA2C2207DF7FB0051F3CE /* ViewController.swift */; };
 		C83DA2C6207DF7FB0051F3CE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C83DA2C4207DF7FB0051F3CE /* Main.storyboard */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		322289D3208CB89200550FF5 /* BasicTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicTabBarController.swift; sourceTree = "<group>"; };
 		C83DA2BD207DF7FB0051F3CE /* StatusBarManagerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StatusBarManagerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83DA2C0207DF7FB0051F3CE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C83DA2C2207DF7FB0051F3CE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			children = (
 				C8C36612207E192D00EC1D39 /* BasicViewController.swift */,
 				C8C36616207E1C5600EC1D39 /* BasicNavigationController.swift */,
+				322289D3208CB89200550FF5 /* BasicTabBarController.swift */,
 				C83DA2D2207DFA620051F3CE /* StatusBarManager.swift */,
 				C83DA2C0207DF7FB0051F3CE /* AppDelegate.swift */,
 				C83DA2C2207DF7FB0051F3CE /* ViewController.swift */,
@@ -148,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				322289D4208CB89200550FF5 /* BasicTabBarController.swift in Sources */,
 				C83DA2D3207DFA620051F3CE /* StatusBarManager.swift in Sources */,
 				C8C36613207E192D00EC1D39 /* BasicViewController.swift in Sources */,
 				C8C36617207E1C5600EC1D39 /* BasicNavigationController.swift in Sources */,
