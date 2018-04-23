@@ -71,7 +71,6 @@ class StatusBarManager {
     /// 初始化根节点
     fileprivate init() {
         rootState = StatusBarState()
-        rootState.superState = rootState
         currentState = rootState
         stateKeys.insert(rootState.key)
     }
