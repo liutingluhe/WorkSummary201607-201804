@@ -20,19 +20,20 @@ class BasicNavigationController: UINavigationController {
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return StatusBarManager.shared.animation
     }
-    override var childViewControllerForStatusBarHidden: UIViewController? {
-        return self.topViewController
-    }
-    override var childViewControllerForStatusBarStyle: UIViewController? {
-        return self.topViewController
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        pushStatusBars(for: viewControllers)
+    }
+    
+    override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+        clearSubStatusBars(isUpdate: false)
+        pushStatusBars(for: viewControllers)
+        super.setViewControllers(viewControllers, animated: animated)
     }
     
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        StatusBarManager.shared.pushState(with: "\(viewController)")
+        topViewController?.addSubStatusBar(for: viewController)
         super.pushViewController(viewController, animated: animated)
     }
 }

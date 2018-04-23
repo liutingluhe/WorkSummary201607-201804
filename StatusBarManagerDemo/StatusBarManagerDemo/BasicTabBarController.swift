@@ -20,50 +20,19 @@ class BasicTabBarController: UITabBarController, UITabBarControllerDelegate {
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return StatusBarManager.shared.animation
     }
-    override var childViewControllerForStatusBarStyle: UIViewController? {
-        return self.selectedViewController
-    }
-    override var childViewControllerForStatusBarHidden: UIViewController? {
-        return self.selectedViewController
-    }
-    
-    override var selectedIndex: Int {
-        get {
-            return super.selectedIndex
-        }
-        set {
-            if let viewControllers = super.viewControllers {
-                let selectedViewController = viewControllers[newValue]
-                StatusBarManager.shared.showState(for: "\(selectedViewController)", root: "\(self)")
-            }
-            super.selectedIndex = newValue
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let viewControllers = viewControllers {
-            let keys = viewControllers.map({ "\($0)" })
-            StatusBarManager.shared.clearSubStates(with: "\(self)")
-            StatusBarManager.shared.addSubStates(with: keys)
-            self.selectedIndex = 0
-        }
+        self.setSubStatusBars(for: viewControllers)
         self.delegate = self
-        
     }
     
     override func setViewControllers(_ viewControllers: [UIViewController]?, animated: Bool) {
-        if let viewControllers = viewControllers {
-            let keys = viewControllers.map({ "\($0)" })
-            StatusBarManager.shared.clearSubStates(with: "\(self)")
-            StatusBarManager.shared.addSubStates(with: keys)
-        }
+        self.setSubStatusBars(for: viewControllers)
         super.setViewControllers(viewControllers, animated: animated)
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if let viewControllers = viewControllers, let index = viewControllers.index(of: viewController) {
-            self.selectedIndex = index
-        }
+        showStatusBar(for: viewController)
     }
 }

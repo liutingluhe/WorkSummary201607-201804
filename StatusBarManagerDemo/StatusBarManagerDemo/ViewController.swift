@@ -18,17 +18,17 @@ class ViewController: BasicViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.backgroundColor = UIColor.white
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSFontAttributeName: UIFont.systemFont(ofSize: 14),
-            NSForegroundColorAttributeName: UIColor.black
-        ]
     }
     
     fileprivate func setupSubviews() {
         
         self.view.backgroundColor = UIColor.white
         self.navigationItem.title = "Home"
-        StatusBarManager.shared.style = .default
+        setStatusBar(isHidden: false, style: .default)
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSFontAttributeName: UIFont.systemFont(ofSize: 14),
+            NSForegroundColorAttributeName: UIColor.red
+        ]
         
         let button = UIButton(type: .system)
         button.frame = self.view.bounds
@@ -44,6 +44,11 @@ class ViewController: BasicViewController {
     func pushToViewController() {
         let pushVC = PushViewController()
         self.navigationController?.pushViewController(pushVC, animated: true)
+        
+        // 延时 3 秒后，对该控制器状态栏状态进行修改，看看会不会影响别的状态栏状态
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3) {
+            self.setStatusBar(isHidden: true)
+        }
     }
 }
 

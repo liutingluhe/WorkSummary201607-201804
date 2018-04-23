@@ -26,15 +26,11 @@ class BasicViewController: UIViewController {
     }
     
     deinit {
-         StatusBarManager.shared.popState()
+         self.removeFromSuperStatusBar()
     }
     
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        StatusBarManager.shared.pushState(with: "\(viewControllerToPresent)")
+        self.addSubStatusBar(for: viewControllerToPresent)
         super.present(viewControllerToPresent, animated: flag, completion: completion)
-    }
-    
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
     }
 }

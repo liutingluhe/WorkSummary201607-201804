@@ -18,17 +18,27 @@ class PushViewController: BasicViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.backgroundColor = UIColor.black
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSFontAttributeName: UIFont.systemFont(ofSize: 14),
-            NSForegroundColorAttributeName: UIColor.white
-        ]
     }
     
     fileprivate func setupSubviews() {
         
         self.view.backgroundColor = UIColor.black
         self.navigationItem.title = "Push"
-        StatusBarManager.shared.style = .lightContent
+        setStatusBar(isHidden: false, style: .lightContent)
+        
+        let button = UIButton(type: .system)
+        button.frame = self.view.bounds
+        button.setTitleColor(UIColor.red, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.setTitle("Push 02", for: .normal)
+        button.sizeToFit()
+        button.center = self.view.center
+        button.addTarget(self, action: #selector(PushViewController.pushToViewController), for: .touchUpInside)
+        self.view.addSubview(button)
     }
 
+    func pushToViewController() {
+        let pushVC = Push02ViewController()
+        self.navigationController?.pushViewController(pushVC, animated: true)
+    }
 }
