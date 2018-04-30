@@ -9,7 +9,7 @@
 import UIKit
 import SnapKit
 
-class TestView: UIView, ViewStyleConfigurable {
+class TestView: UIView, ViewConfigurable {
     
     fileprivate var nameLabel: UILabel!
     fileprivate var introLabel: UILabel!
@@ -59,7 +59,7 @@ class TestView: UIView, ViewStyleConfigurable {
     }
     
     /// 更新视图样式，不要直接调用，通过赋值 self.viewStyle 属性间接调用
-    func updateStyle(_ viewStyle: TestViewStyle) {
+    func bind(viewStyle: TestViewStyle) {
         
         /* 对外可配置属性 */
         // 名字
@@ -68,8 +68,8 @@ class TestView: UIView, ViewStyleConfigurable {
         
         // 介绍
         introLabel.numberOfLines = viewStyle.introLabel.numberOfLines
-        if let attributes = viewStyle.introLabel.attributes, let text = introLabel.text {
-            introLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
+        if let text = introLabel.text {
+            introLabel.attributedText = NSAttributedString(string: text, attributes: viewStyle.introLabel.attributes)
         }
         
         // 订阅按钮
@@ -82,7 +82,7 @@ class TestView: UIView, ViewStyleConfigurable {
         subscribeButton.titleLabel?.font = viewStyle.subscribeButton.titleFont
         
         // 头像
-        imageView.layer.borderColor = viewStyle.imageView.borderColor?.cgColor
+        imageView.layer.borderColor = viewStyle.imageView.borderColor.cgColor
         imageView.layer.borderWidth = viewStyle.imageView.borderWidth
         imageView.layer.cornerRadius = viewStyle.imageView.cornerRadius
         imageView.clipsToBounds = viewStyle.imageView.clipsToBounds

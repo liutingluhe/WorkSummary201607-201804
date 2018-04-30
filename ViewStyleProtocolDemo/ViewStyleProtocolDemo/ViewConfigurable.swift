@@ -10,15 +10,15 @@ import UIKit
 import Foundation
 
 // MARK: - 视图可配置协议
-public protocol ViewStyleConfigurable: class {
+public protocol ViewConfigurable: class {
     associatedtype ViewStyle
     var viewStyle: ViewStyle? { get set }
-    func updateStyle(_ viewStyle: ViewStyle)
+    func bind(viewStyle: ViewStyle)
 }
 
 /// 为实现该协议的类添加一个伪存储属性（利用 objc 的关联方法实现），用来保存样式配置表
 fileprivate var viewStyleKey: String = "viewStyleKey"
-extension ViewStyleConfigurable {
+extension ViewConfigurable {
     
     var viewStyle: ViewStyle? {
         get {
@@ -27,7 +27,7 @@ extension ViewStyleConfigurable {
         set {
             objc_setAssociatedObject(self, &viewStyleKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             if let style = newValue {
-                self.updateStyle(style)
+                self.bind(viewStyle: style)
             }
         }
     }
@@ -37,9 +37,9 @@ extension ViewStyleConfigurable {
 /// View 配置项
 class ViewConfiguration {
     
-    lazy var backgroundColor: UIColor? = UIColor.clear
+    lazy var backgroundColor: UIColor = UIColor.clear
     lazy var borderWidth: CGFloat = 0
-    lazy var borderColor: UIColor? = UIColor.clear
+    lazy var borderColor: UIColor = UIColor.clear
     lazy var cornerRadius: CGFloat = 0
     lazy var clipsToBounds: Bool = false
     lazy var contentMode: UIViewContentMode = .scaleToFill
@@ -50,33 +50,27 @@ class ViewConfiguration {
 /// Label 配置项
 class LabelConfiguration: ViewConfiguration {
     lazy var numberOfLines: Int = 1
-    lazy var textColor: UIColor? = UIColor.black
-    lazy var textBackgroundColor: UIColor? = UIColor.clear
-    lazy var font: UIFont? = UIFont.systemFont(ofSize: 14)
+    lazy var textColor: UIColor = UIColor.black
+    lazy var textBackgroundColor: UIColor = UIColor.clear
+    lazy var font: UIFont = UIFont.systemFont(ofSize: 14)
     lazy var textAlignment: NSTextAlignment = .left
     lazy var lineBreakMode: NSLineBreakMode = .byTruncatingTail
     lazy var lineSpacing: CGFloat = 0
     lazy var characterSpacing: CGFloat = 0
     
     // 属性表，用于属性字符串使用
-    var attributes: [String: Any]? {
+    var attributes: [String: Any] {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = self.lineSpacing
         paragraphStyle.lineBreakMode = self.lineBreakMode
         paragraphStyle.alignment = self.textAlignment
-        var attributes: [String: Any] = [
+        let attributes: [String: Any] = [
             NSParagraphStyleAttributeName: paragraphStyle,
-            NSKernAttributeName: self.characterSpacing
+            NSKernAttributeName: self.characterSpacing,
+            NSFontAttributeName: self.font,
+            NSForegroundColorAttributeName: self.textColor,
+            NSBackgroundColorAttributeName: self.textBackgroundColor
         ]
-        if let font = self.font {
-            attributes[NSFontAttributeName] = font
-        }
-        if let textColor = self.textColor {
-            attributes[NSForegroundColorAttributeName] = textColor
-        }
-        if let textBackgroundColor = self.textBackgroundColor {
-            attributes[NSBackgroundColorAttributeName] = textBackgroundColor
-        }
         return attributes
     }
 }

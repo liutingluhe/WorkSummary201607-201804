@@ -21,8 +21,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 初始化
         testView = TestView(frame: CGRect(x: 0, y: 100, width: self.view.frame.size.width, height: 200))
+        // 配置样式
+        testView.viewStyle = TestViewStyle1()
         self.view.addSubview(testView)
+        
+        // 更换样式配置
+        testView.viewStyle = TestViewStyle2()
         
         let model = TestModel()
         model.name = "执着丶执念"

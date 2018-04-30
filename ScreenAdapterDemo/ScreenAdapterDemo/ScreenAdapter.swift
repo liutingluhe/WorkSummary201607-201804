@@ -35,7 +35,7 @@ extension CGFloat {
     }
     
     var addBottomForInchX: CGFloat {
-        return AdaptType<CGFloat>.iPhoneX(40, other: 0).value
+        return AdaptType<CGFloat>.iPhoneX(34, other: 0).value
     }
 }
 
