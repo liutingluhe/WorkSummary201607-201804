@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GIFImageLoadDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zOa-XK-1pz" customClass="BasicGIFImageView" customModule="GIFImageLoadDemo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="60" width="335" height="167.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="zOa-XK-1pz" secondAttribute="height" multiplier="4:2" id="zQy-PQ-qmb"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="P3R-kB-Oom" customClass="BasicGIFImageView" customModule="GIFImageLoadDemo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="257.5" width="335" height="167.5"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="P3R-kB-Oom" firstAttribute="height" secondItem="zOa-XK-1pz" secondAttribute="height" id="1zZ-5z-PtA"/>
+                            <constraint firstItem="P3R-kB-Oom" firstAttribute="width" secondItem="zOa-XK-1pz" secondAttribute="width" id="GWX-J9-O5n"/>
+                            <constraint firstItem="zOa-XK-1pz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="K3K-cR-vgs"/>
+                            <constraint firstItem="zOa-XK-1pz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="OfD-WD-lox"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zOa-XK-1pz" secondAttribute="trailing" constant="20" id="PqW-sF-pvu"/>
+                            <constraint firstItem="P3R-kB-Oom" firstAttribute="centerX" secondItem="zOa-XK-1pz" secondAttribute="centerX" id="aQb-cG-5Hx"/>
+                            <constraint firstItem="P3R-kB-Oom" firstAttribute="top" secondItem="zOa-XK-1pz" secondAttribute="bottom" constant="30" id="nbN-KS-ahV"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="localImageView" destination="P3R-kB-Oom" id="Jhm-t5-w5D"/>
+                        <outlet property="networkImageView" destination="zOa-XK-1pz" id="JfP-AJ-dRK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>
