@@ -9,3 +9,4 @@
 * ScreenAdapterDemo - 屏幕适配工具类使用 Demo
 * StatusBarManagerDemo - 全局管理状态栏显示 Demo
 * ViewStyleProtocolDemo - 视图布局样式可配置协议使用 Demo
+* GIFImageLoadDemo - GIF 图片加载优化 Demo
