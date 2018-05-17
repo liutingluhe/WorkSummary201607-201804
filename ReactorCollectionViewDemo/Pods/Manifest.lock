@@ -1,0 +1,36 @@
+PODS:
+  - Alamofire (4.5.0)
+  - ReactorKit (0.6.0):
+    - RxSwift (>= 3.0.0)
+  - RxCocoa (3.6.1):
+    - RxSwift (~> 3.6)
+  - RxDataSources (1.0.4):
+    - RxCocoa (~> 3.0)
+    - RxSwift (~> 3.0)
+  - RxSwift (3.6.1)
+
+DEPENDENCIES:
+  - Alamofire (= 4.5.0)
+  - ReactorKit (= 0.6.0)
+  - RxCocoa (= 3.6.1)
+  - RxDataSources (= 1.0.4)
+  - RxSwift (= 3.6.1)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - ReactorKit
+    - RxCocoa
+    - RxDataSources
+    - RxSwift
+
+SPEC CHECKSUMS:
+  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  ReactorKit: d979377df0ff393cb0ed4df9c2b31b2edd8dca08
+  RxCocoa: 84a08739ab186248c7f31ce4ee92d6f8a947d690
+  RxDataSources: b3389acc5fe2eefb8fcd81a2b76a876ad08bc82a
+  RxSwift: f9de85ea20cd2f7716ee5409fc13523dc638e4e4
+
+PODFILE CHECKSUM: ca58c90f86f1b6fb5c1946af2db0ecb9a815eda3
+
+COCOAPODS: 1.5.2

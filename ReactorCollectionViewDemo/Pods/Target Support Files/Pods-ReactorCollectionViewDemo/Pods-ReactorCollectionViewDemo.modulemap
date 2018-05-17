@@ -1,0 +1,6 @@
+framework module Pods_ReactorCollectionViewDemo {
+  umbrella header "Pods-ReactorCollectionViewDemo-umbrella.h"
+
+  export *
+  module * { export * }
+}
