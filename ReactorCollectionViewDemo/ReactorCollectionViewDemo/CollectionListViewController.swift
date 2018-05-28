@@ -34,10 +34,6 @@ class CollectionListViewController: UIViewController, View {
     
     func bind(reactor: CollectionListViewReactor) {
         
-        collectionView.rx
-            .setDelegate(collectionView)
-            .disposed(by: disposeBag)
-        
         reactor.collectionReactor.dataSource.configureCell = { dataSource, collectionView, indexPath, element in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TestCollectionViewCell", for: indexPath) as! TestCollectionViewCell
             cell.reactor = element as? TestCollectionViewCellReactor

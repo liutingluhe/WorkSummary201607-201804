@@ -84,6 +84,8 @@ open class BasicCollectionView: UICollectionView, View, UICollectionViewDelegate
     // CollectionView 动作绑定
     open func bind(reactor: BasicCollectionViewReactor) {
         
+        self.rx.setDelegate(self).disposed(by: disposeBag)
+        
         // Cell/Footer/Header 高度默认设置
         if self.layoutSource.configureSizeForCell == nil {
             self.layoutSource.configureSizeForCell = { reactor.getCellSize(indexPath: $0) }
