@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-class RxCollectionViewSectionedAnimatedReloadDataSource<S: AnimatableSectionModelType>
+open class RxCollectionViewSectionedAnimatedReloadDataSource<S: AnimatableSectionModelType>
     : RxCollectionViewSectionedReloadDataSource<S> {
     
     public var animationConfiguration = AnimationConfiguration()
@@ -28,7 +28,7 @@ class RxCollectionViewSectionedAnimatedReloadDataSource<S: AnimatableSectionMode
             .subscribe(onNext: { [weak self] event in
                 self?.collectionView(event.0, throttledObservedEvent: event.1)
             })
-            .addDisposableTo(disposeBag)
+            .disposed(by: disposeBag)
     }
     
     open func collectionView(_ collectionView: UICollectionView, throttledObservedEvent event: Event<Element>) {
@@ -47,15 +47,14 @@ class RxCollectionViewSectionedAnimatedReloadDataSource<S: AnimatableSectionMode
                     
                     collectionView.performBatchUpdates(difference, animationConfiguration: self.animationConfiguration)
                 }
-            }
-            catch let e {
+            } catch {
                 self.setSections(newSections)
                 collectionView.reloadData()
             }
         }.on(event)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, observedEvent: Event<Element>) {
+    open override func collectionView(_ collectionView: UICollectionView, observedEvent: Event<Element>) {
         UIBindingObserver(UIElement: self) { dataSource, newSections in
             if !self.dataSet {
                 self.dataSet = true

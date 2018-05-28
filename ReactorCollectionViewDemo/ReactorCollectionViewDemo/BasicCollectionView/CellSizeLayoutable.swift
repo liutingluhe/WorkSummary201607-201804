@@ -11,15 +11,15 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-protocol CellSizeLayoutable {
-    var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel> { get set }
+public protocol CellSizeLayoutable {
+    var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel> { get }
     func getCellSize(indexPath: IndexPath) -> CGSize
     func getFooterSize(section: Int) -> CGSize
     func getHeaderSize(section: Int) -> CGSize
 }
 
 extension CellSizeLayoutable {
-    func getCellSize(indexPath: IndexPath) -> CGSize {
+    public func getCellSize(indexPath: IndexPath) -> CGSize {
         if let section = dataSource.sectionModels.safeIndex(indexPath.section) {
             if let item = section.items.safeIndex(indexPath.row) {
                 return item.cellSize
@@ -28,11 +28,17 @@ extension CellSizeLayoutable {
         return .zero
     }
     
-    func getFooterSize(section: Int) -> CGSize {
+    public func getFooterSize(section: Int) -> CGSize {
+        if let section = dataSource.sectionModels.safeIndex(section) {
+            return section.model.footerSize
+        }
         return .zero
     }
     
-    func getHeaderSize(section: Int) -> CGSize {
+    public func getHeaderSize(section: Int) -> CGSize {
+        if let section = dataSource.sectionModels.safeIndex(section) {
+            return section.model.headerSize
+        }
         return .zero
     }
 }

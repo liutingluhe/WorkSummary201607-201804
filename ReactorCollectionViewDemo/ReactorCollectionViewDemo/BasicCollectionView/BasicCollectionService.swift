@@ -13,7 +13,7 @@ import RxCocoa
 import RxDataSources
 import ReactorKit
 
-typealias Result = Alamofire.Result
+public typealias Result = Alamofire.Result
 
 extension Collection {
     /*
@@ -21,7 +21,7 @@ extension Collection {
      print(array.safeIndex(1)) // Optional 2
      print(array.safeIndex(88)) // Nil
      */
-    func safeIndex(_ i: Int) -> Self.Iterator.Element? {
+    public func safeIndex(_ i: Int) -> Self.Iterator.Element? {
         
         guard !isEmpty && count > abs(i) else { return nil }
         
@@ -34,34 +34,39 @@ extension Collection {
     }
 }
 
-typealias BasicListModel = AnimatableSectionModel<BasicListSectionModel, BasicListItemModel>
+public typealias BasicListModel = AnimatableSectionModel<BasicListSectionModel, BasicListItemModel>
 
-class BasicListItemModel: IdentifiableType, Equatable {
-    var identity: String = ""
-    var cellSize: CGSize = .zero
-    var didSelected: Bool = false
+// MARK: - 基础的列表元素模型
+open class BasicListItemModel: IdentifiableType, Equatable {
+    open var identity: String = ""
+    open var cellSize: CGSize = .zero
+    open var didSelected: Bool = false
     
-    static func ==(lhs: BasicListItemModel, rhs: BasicListItemModel) -> Bool {
+    public static func ==(lhs: BasicListItemModel, rhs: BasicListItemModel) -> Bool {
         return lhs.identity == rhs.identity
     }
 }
 
-class BasicListSectionModel: IdentifiableType, Equatable {
-    var totalCount: Int = 0
-    var canLoadMore: Bool = false
-    var identity: String = ""
+// MARK: - 基础的列表组模型
+open class BasicListSectionModel: IdentifiableType, Equatable {
+    open var totalCount: Int = 0
+    open var canLoadMore: Bool = false
+    open var identity: String = ""
+    open var headerSize: CGSize = .zero
+    open var footerSize: CGSize = .zero
     
-    init(totalCount: Int = 0, canLoadMore: Bool = false) {
+    public init(totalCount: Int = 0, canLoadMore: Bool = false) {
         self.totalCount = totalCount
         self.canLoadMore = canLoadMore
     }
 
-    static func ==(lhs: BasicListSectionModel, rhs: BasicListSectionModel) -> Bool {
+    public static func ==(lhs: BasicListSectionModel, rhs: BasicListSectionModel) -> Bool {
         return lhs.identity == rhs.identity
     }
 }
 
-protocol ListServiceType {
+// MARK: - 列表服务类型
+public protocol ListServiceType {
     associatedtype IndexType: Hashable
     associatedtype ItemType: IdentifiableType & Equatable
     associatedtype Section: IdentifiableType
@@ -84,6 +89,8 @@ protocol ListServiceType {
     func delete(indexs: [IndexType], sections: [SectionType]) -> [SectionType]
     /// 列表修改某个元素
     func update(items: [ItemType], sections: [SectionType]) -> [SectionType]
+    /// 列表替换某个元素
+    func replace(items: [IndexType: ItemType], sections: [SectionType]) -> [SectionType]
     /// 列表查找元素
     func find(index: IndexType, sections: [SectionType]) -> ItemType?
     /// 列表批量查找元素
@@ -96,44 +103,62 @@ protocol ListServiceType {
     func mergeUpdateItem(_ oldItem: ItemType, newItem: ItemType)
 }
 
-class BasicCollectionService: ListServiceType {
+// MARK: - 基础列表服务
+open class BasicCollectionService: ListServiceType {
     
-    typealias IndexType = IndexPath
-    typealias ItemType = BasicListItemModel
-    typealias Section = BasicListSectionModel
-    typealias SectionType = AnimatableSectionModel<Section, ItemType>
+    public typealias IndexType = IndexPath
+    public typealias ItemType = BasicListItemModel
+    public typealias Section = BasicListSectionModel
+    public typealias SectionType = AnimatableSectionModel<Section, ItemType>
     
-    var deletedItemsCache: [ItemType] = []
-    var needCacheDeleted: Bool = false
-    
+    open var deletedItemsCache: [ItemType] = []
+    open var needCacheDeleted: Bool = false
+    open var isSelectedForNext: Bool = false
+
     /// 列表请求
-    func request(page: Int) -> Observable<Result<[SectionType]>> {
-        return .empty()
+    open func request(page: Int) -> Observable<Result<[SectionType]>> {
+        return .just(.success([]))
     }
     /// 列表排序
-    func sort(sections: [SectionType]) -> [SectionType] {
+    open func sort(sections: [SectionType]) -> [SectionType] {
         return sections
     }
     /// 列表分组
-    func group(sections: [SectionType]) -> [SectionType] {
+    public func group(sections: [SectionType]) -> [SectionType] {
         return sections
     }
     /// 列表选中
-    func select(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
-        sections.forEach { (section) in
-            section.items.forEach({ (item) in
-                item.didSelected = false
-            })
+    public func select(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
+        if isSelectedForNext {
+            return selectNext(indexs: indexs, sections: sections)
+        } else {
+            return selectNew(indexs: indexs, sections: sections)
         }
+    }
+    /// 列表选中新选项组，移出之前选项组
+    public func selectNew(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
+        for (sectionIndex, section) in sections.enumerated() {
+            for (itemIndex, item) in section.items.enumerated() {
+                if indexs.contains(IndexPath(row: itemIndex, section: sectionIndex)) {
+                    item.didSelected = true
+                } else {
+                    item.didSelected = false
+                }
+            }
+        }
+        return sections
+    }
+    /// 列表选中下一个选项组到原来选项组，选中2次表示不选择
+    public func selectNext(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
         indexs.forEach { (index) in
             if let item = find(index: index, sections: sections) {
-                item.didSelected = true
+                item.didSelected = !item.didSelected
             }
         }
         return sections
     }
     /// 列表插入元素
-    func insert(items: [IndexType: ItemType], sections: [SectionType]) -> [SectionType] {
+    open func insert(items: [IndexType: ItemType], sections: [SectionType]) -> [SectionType] {
         let soredItems = items.sorted(by: { $0.key < $1.key })
         var newSections: [SectionType] = sections
         soredItems.forEach { (key, value) in
@@ -150,7 +175,7 @@ class BasicCollectionService: ListServiceType {
         return newSections
     }
     /// 列表删除元素，根据具体要删除的元素
-    func delete(items: [ItemType], sections: [SectionType]) -> [SectionType] {
+    open func delete(items: [ItemType], sections: [SectionType]) -> [SectionType] {
         var newSections: [SectionType] = []
         sections.forEach { (section) in
             var newSection = section
@@ -171,7 +196,7 @@ class BasicCollectionService: ListServiceType {
         return newSections
     }
     /// 列表删除元素，根据要删除的索引
-    func delete(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
+    open func delete(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
         var newSections: [SectionType] = []
         for (sectionIndex, section) in sections.enumerated() {
             if indexs.filter({ $0.section == sectionIndex }).count > 0 {
@@ -196,7 +221,7 @@ class BasicCollectionService: ListServiceType {
         return newSections
     }
     /// 列表修改某个元素
-    func update(items: [ItemType], sections: [SectionType]) -> [SectionType] {
+    open func update(items: [ItemType], sections: [SectionType]) -> [SectionType] {
         var newSections = sections
         for (sectionIndex, var section) in sections.enumerated() {
             var newItems = section.items
@@ -210,15 +235,30 @@ class BasicCollectionService: ListServiceType {
         }
         return newSections
     }
+    /// 列表替换某个元素
+    open func replace(items: [IndexType: ItemType], sections: [SectionType]) -> [SectionType] {
+        var newSections = sections
+        for (sectionIndex, var section) in sections.enumerated() {
+            var newItems = section.items
+            for (itemIndex, _) in section.items.enumerated() {
+                if let newItem = items.filter({ $0.key == IndexPath(row: itemIndex, section: sectionIndex) }).first {
+                    newItems[itemIndex] = newItem.value
+                }
+            }
+            section.items = newItems
+            newSections[sectionIndex] = section
+        }
+        return newSections
+    }
     /// 列表查找元素
-    func find(index: IndexType, sections: [SectionType]) -> ItemType? {
+    open func find(index: IndexType, sections: [SectionType]) -> ItemType? {
         if let section = sections.safeIndex(index.section) {
             return section.items.safeIndex(index.item)
         }
         return nil
     }
     /// 列表批量查找元素
-    func find(indexs: [IndexType], sections: [SectionType]) -> [IndexType: ItemType] {
+    open func find(indexs: [IndexType], sections: [SectionType]) -> [IndexType: ItemType] {
         var result: [IndexType: ItemType] = [:]
         indexs.forEach { (index) in
             result[index] = find(index: index, sections: sections)
@@ -226,11 +266,11 @@ class BasicCollectionService: ListServiceType {
         return result
     }
     /// 获取本地缓存数据
-    var localSections: [SectionType] {
+    open var localSections: [SectionType] {
         return []
     }
     /// 批量合并多组的所有元素
-    func mergeSections(_ oldSetions: [SectionType], with sections: [SectionType], page: Int) -> [SectionType] {
+    open func mergeSections(_ oldSetions: [SectionType], with sections: [SectionType], page: Int) -> [SectionType] {
         var newSections: [SectionType] = []
         sections.forEach { (section) in
             if let oldSection = oldSetions.filter({ $0.model.identity == section.model.identity }).first {
@@ -243,7 +283,7 @@ class BasicCollectionService: ListServiceType {
         return newSections
     }
     /// 合并一组的所有元素
-    func mergeSection(_ oldSetion: SectionType, with section: SectionType, page: Int) -> SectionType {
+    open func mergeSection(_ oldSetion: SectionType, with section: SectionType, page: Int) -> SectionType {
         var newSection = oldSetion
         let currentItems = oldSetion.items
         // 过滤之前手动删除的 cell
@@ -271,6 +311,6 @@ class BasicCollectionService: ListServiceType {
         return newSection
     }
     /// 合并中对旧元素的更新操作
-    func mergeUpdateItem(_ oldItem: ItemType, newItem: ItemType) {
+    open func mergeUpdateItem(_ oldItem: ItemType, newItem: ItemType) {
     }
 }

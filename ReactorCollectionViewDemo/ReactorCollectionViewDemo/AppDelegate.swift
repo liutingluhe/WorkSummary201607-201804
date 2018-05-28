@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let reactor = CollectionListViewReactor()
         let viewController = CollectionListViewController(reactor: reactor)
         let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.navigationBar.isHidden = true
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         self.window = window

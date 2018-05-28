@@ -15,7 +15,6 @@ class CollectionListViewController: UIViewController, View {
     
     var collectionView: BasicCollectionView!
     var disposeBag = DisposeBag()
-    let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
     
     init(reactor: CollectionListViewReactor) {
         super.init(nibName: nil, bundle: nil)
@@ -29,7 +28,7 @@ class CollectionListViewController: UIViewController, View {
     
     func setupSubviews() {
         collectionView = BasicCollectionView(frame: self.view.bounds)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionViewCell")
+        collectionView.register(TestCollectionViewCell.self, forCellWithReuseIdentifier: "TestCollectionViewCell")
         self.view.addSubview(collectionView)
     }
     
@@ -40,15 +39,14 @@ class CollectionListViewController: UIViewController, View {
             .disposed(by: disposeBag)
         
         reactor.collectionReactor.dataSource.configureCell = { dataSource, collectionView, indexPath, element in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
-            cell.backgroundColor = element.didSelected ? UIColor.blue : UIColor.red
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TestCollectionViewCell", for: indexPath) as! TestCollectionViewCell
+            cell.reactor = element as? TestCollectionViewCellReactor
             return cell
         }
         reactor.collectionReactor.dataSource.supplementaryViewFactory = { _, _, _, _ in
             return UICollectionReusableView()
         }
         
-        collectionView.layoutSource.configureSizeForCell = { reactor.collectionReactor.getCellSize(indexPath: $0) }
         collectionView.reactor = reactor.collectionReactor
         
         reactor.state.filter({ $0.isRefresh })
@@ -57,7 +55,7 @@ class CollectionListViewController: UIViewController, View {
             .disposed(by: disposeBag)
         
         collectionView.rx.itemSelected
-            .map({ BasicCollectionViewReactor.Action.deleteIndexs([$0]) })
+            .map({ BasicCollectionViewReactor.Action.selectIndexs([$0]) })
             .bind(to: reactor.collectionReactor.action)
             .disposed(by: disposeBag)
     }

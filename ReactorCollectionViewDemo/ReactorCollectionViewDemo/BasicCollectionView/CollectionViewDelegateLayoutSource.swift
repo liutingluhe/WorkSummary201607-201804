@@ -8,84 +8,80 @@
 
 import UIKit
 
-protocol Zeroable {
+public protocol Zeroable {
     static var zero: Self { get }
 }
 
-extension CGSize: Zeroable {
-    
-}
-
-extension UIEdgeInsets: Zeroable {
-    
-}
+extension CGSize: Zeroable { }
+extension CGRect: Zeroable { }
+extension UIEdgeInsets: Zeroable { }
 
 extension CGFloat: Zeroable {
-    static var zero: CGFloat {
+    public static var zero: CGFloat {
         return 0.0
     }
 }
 
-class Layout<Input, Output: Zeroable> {
-    var factory: (Input) -> Output = { _ in
+open class Layout<Input, Output: Zeroable> {
+    open var factory: (Input) -> Output = { _ in
         return Output.zero
     }
     
-    func at(_ index: Input) -> Output {
+    open func at(_ index: Input) -> Output {
         return factory(index)
     }
 }
 
-class CollectionViewLayoutSource {
+open class CollectionViewLayoutSource {
     
-    typealias SizeForCellFactory = (IndexPath) -> CGSize
-    typealias SupplementaryViewSizeFactory = (Int) -> CGSize
-    typealias SpacingFactory = (Int) -> CGFloat
-    typealias EdgeInsetsFactory = (Int) -> UIEdgeInsets
+    public typealias SizeForCellFactory = (IndexPath) -> CGSize
+    public typealias SupplementaryViewSizeFactory = (Int) -> CGSize
+    public typealias SpacingFactory = (Int) -> CGFloat
+    public typealias EdgeInsetsFactory = (Int) -> UIEdgeInsets
     
-    var sizeForCell: Layout<IndexPath, CGSize> = Layout<IndexPath, CGSize>()
-    var sizeForHeader: Layout<Int, CGSize>  = Layout<Int, CGSize>()
-    var sizeForFooter: Layout<Int, CGSize>  = Layout<Int, CGSize>()
-    var insetForSection: Layout<Int, UIEdgeInsets>  = Layout<Int, UIEdgeInsets>()
-    var minLineSpacing: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
-    var minInteritemSpacing: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
+    open var sizeForCell: Layout<IndexPath, CGSize> = Layout<IndexPath, CGSize>()
+    open var sizeForHeader: Layout<Int, CGSize>  = Layout<Int, CGSize>()
+    open var sizeForFooter: Layout<Int, CGSize>  = Layout<Int, CGSize>()
+    open var insetForSection: Layout<Int, UIEdgeInsets>  = Layout<Int, UIEdgeInsets>()
+    open var minLineSpacing: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
+    open var minInteritemSpacing: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
     
-    var configureSizeForCell: SizeForCellFactory? {
+    open var configureSizeForCell: SizeForCellFactory? {
         didSet {
             if let configureSizeForCell = configureSizeForCell {
                 sizeForCell.factory = configureSizeForCell
             }
         }
     }
-    var configureHeaderSize: SupplementaryViewSizeFactory? {
+    open var configureHeaderSize: SupplementaryViewSizeFactory? {
         didSet {
             if let configureHeaderSize = configureHeaderSize {
                 sizeForHeader.factory = configureHeaderSize
             }
         }
     }
-    var configureFooterSize: SupplementaryViewSizeFactory? {
+    open var configureFooterSize: SupplementaryViewSizeFactory? {
         didSet {
             if let configureFooterSize = configureFooterSize {
                 sizeForFooter.factory = configureFooterSize
             }
         }
     }
-    var configureMinLineSpacing: SpacingFactory? {
+    open var configureMinLineSpacing: SpacingFactory? {
         didSet {
             if let configureMinLineSpacing = configureMinLineSpacing {
                 minLineSpacing.factory = configureMinLineSpacing
             }
         }
     }
-    var configureMinInteritemSpacing: SpacingFactory? {
+    open var configureMinInteritemSpacing: SpacingFactory? {
         didSet {
             if let configureMinInteritemSpacing = configureMinInteritemSpacing {
                 minInteritemSpacing.factory = configureMinInteritemSpacing
             }
         }
     }
-    var configureInsetForSection: EdgeInsetsFactory? {
+    open var configureInsetForSection: EdgeInsetsFactory? {
         didSet {
             if let configureInsetForSection = configureInsetForSection {
                 insetForSection.factory = configureInsetForSection

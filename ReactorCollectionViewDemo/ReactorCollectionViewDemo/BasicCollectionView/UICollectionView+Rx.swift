@@ -11,11 +11,17 @@ import RxSwift
 import RxCocoa
 
 extension Reactive where Base: UICollectionView {
-    var reload: UIBindingObserver<Base, Bool> {
+    public var reload: UIBindingObserver<Base, Bool> {
         return UIBindingObserver(UIElement: base) { collectionView, isReload in
             if isReload {
                 collectionView.reloadData()
             }
         }
     }
+    
+    public var contentSize: Observable<CGSize> {
+        return self.observe(CGSize.self, "contentSize")
+            .map({ $0 ?? .zero })
+    }
+    
 }

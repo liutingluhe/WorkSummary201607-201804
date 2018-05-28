@@ -8,48 +8,56 @@
 
 import UIKit
 import RxSwift
-import RxCocoa
 import RxDataSources
 import ReactorKit
 
-class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
+open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
 
-    enum Action {
+    public enum Action {
+        // 加载
         case loadFirstPage
         case loadNextPage
+        // 选中
         case selectIndexs([IndexPath])
+        // 插入
         case insertItems([IndexPath: BasicListItemModel])
+        // 删除
         case deleteItems([BasicListItemModel])
         case deleteIndexs([IndexPath])
+        // 更新
         case updateSections([BasicListModel])
+        case updateItems([BasicListItemModel])
+        // 替换
+        case replaceItems([IndexPath: BasicListItemModel])
     }
     
-    enum Mutation {
-        case setLoadingState(Bool)
+    public enum Mutation {
+        case setLoadingState(Bool, page: Int)
         case setSections([BasicListModel], page: Int)
         case refreshSections([BasicListModel])
         case loadFailure(page: Int)
-        case beginLoadFirstPage
     }
     
-    struct State {
+    public struct State {
         var sections: [BasicListModel] = []
         var currentPage: Int = 0
         var isRefresh: Bool = false
         var isFetchData: Bool = false
-        var isLoading: Bool = false
         var isLoadFirstPageSuccess: Bool?
         var isLoadNextPageSuccess: Bool?
-        var isBeginLoadFirstPage: Bool = false
+        var isLoadingFirstPage: Bool = false
+        var isLoadingNextPage: Bool = false
     }
     
-    var initialState: State = State()
-    var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel>
-    var service: BasicCollectionService
-    var isCachePageData: Bool = false
-    var isAnimated: Bool = false
+    open var isCachePageData: Bool = false
+    open var initialState: State = State()
+    open var service: BasicCollectionService
+    open let isAnimated: Bool
+    open var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel>
+    var headerRefreshReactor: BasicRefreshReactor?
+    var footerRefreshReactor: BasicRefreshReactor?
     
-    init(service: BasicCollectionService, isAnimated: Bool = false) {
+    public init(service: BasicCollectionService, isAnimated: Bool = false, useDefaultRefresh: Bool = true) {
         self.service = service
         self.isAnimated = isAnimated
         if isAnimated {
@@ -57,56 +65,83 @@ class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         } else {
             dataSource = RxCollectionViewSectionedReloadDataSource<BasicListModel>()
         }
-        var localSections = service.localSections
-        localSections = service.group(sections: localSections)
-        localSections = service.sort(sections: localSections)
-        initialState.sections = localSections
+        initialState.sections = handleSections(service.localSections)
         initialState.isRefresh = true
+        // 使用默认刷新
+        if useDefaultRefresh {
+            // 顶部下拉刷新
+            let headerRefreshReactor = BasicRefreshReactor()
+            headerRefreshReactor.loadingReactor = BasicLoadingReactor()
+            self.headerRefreshReactor = headerRefreshReactor
+            // 底部加载更多
+            let footerRefreshReactor = BasicRefreshReactor()
+            footerRefreshReactor.loadingReactor = BasicLoadingReactor()
+            self.footerRefreshReactor = footerRefreshReactor
+        }
     }
     
-    func mutate(action: Action) -> Observable<Mutation> {
+    open func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+            // 加载
         case .loadFirstPage:
             return fetchData(page: 0)
         case .loadNextPage:
             if currentState.sections.filter({ $0.model.canLoadMore }).count > 0 {
                 return fetchData(page: currentState.currentPage)
             }
-        case let .selectIndexs(indexPaths):
-            return .just(.refreshSections(service.select(indexs: indexPaths, sections: currentState.sections)))
-        case let .insertItems(insertData):
-            return .just(.refreshSections(service.insert(items: insertData, sections: currentState.sections)))
+            // 选中
+        case let .selectIndexs(indexs):
+            return .just(.refreshSections(service.select(indexs: indexs, sections: currentState.sections)))
+            // 插入
+        case let .insertItems(items):
+            return .just(.refreshSections(service.insert(items: items, sections: currentState.sections)))
+            // 删除
         case let .deleteItems(items):
             return .just(.refreshSections(service.delete(items: items, sections: currentState.sections)))
         case let .deleteIndexs(indexs):
             return .just(.refreshSections(service.delete(indexs: indexs, sections: currentState.sections)))
+            // 更新
         case let .updateSections(sections):
             return .just(.refreshSections(sections))
+        case let .updateItems(items):
+            return .just(.refreshSections(service.update(items: items, sections: currentState.sections)))
+            // 替换
+        case let .replaceItems(items):
+            return .just(.refreshSections(service.replace(items: items, sections: currentState.sections)))
         }
         return .empty()
     }
     
-    func reduce(state: State, mutation: Mutation) -> State {
+    public func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+        return mutation.do(onNext: { [weak self] (mutationValue) in
+            guard let strongSelf = self else { return }
+            if case let .setLoadingState(isLoading, page) = mutationValue {
+                let refreshNext: BasicRefreshReactor.Action = isLoading ? .startRefresh : .stopRefresh
+                if page <= 1 {
+                    strongSelf.headerRefreshReactor?.action.onNext(refreshNext)
+                } else {
+                    strongSelf.footerRefreshReactor?.action.onNext(refreshNext)
+                }
+            }
+        })
+    }
+    
+    open func reduce(state: State, mutation: Mutation) -> State {
         var newState = resetState(state)
         switch mutation {
-        case let .setLoadingState(isLoading):
-            newState.isLoading = isLoading
-            
-        case .beginLoadFirstPage:
-            newState.isBeginLoadFirstPage = true
+        case let .setLoadingState(isLoading, page):
+            if page <= 1 {
+                newState.isLoadingFirstPage = isLoading
+            } else {
+                newState.isLoadingNextPage = isLoading
+            }
             
         case let .refreshSections(sections):
-            var newSections = sections
-            newSections = service.group(sections: newSections)
-            newSections = service.sort(sections: newSections)
-            newState.sections = newSections
+            newState.sections = handleSections(sections)
             newState.isRefresh = true
             
         case let .setSections(sections, page):
-            var newSections = sections
-            newSections = service.group(sections: newSections)
-            newSections = service.sort(sections: newSections)
-            newState.sections = newSections
+            newState.sections = handleSections(sections)
             newState.currentPage = page
             newState.isFetchData = true
             if page <= 1 {
@@ -125,23 +160,36 @@ class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         return newState
     }
     
-    func resetState(_ state: State) -> State {
+    open func resetState(_ state: State) -> State {
         var newState = state
         newState.isRefresh = false
         newState.isFetchData = false
-        newState.isBeginLoadFirstPage = false
         newState.isLoadFirstPageSuccess = nil
         newState.isLoadNextPageSuccess = nil
         return newState
     }
     
+    // 处理数据
+    open func handleSections(_ sections: [BasicListModel]) -> [BasicListModel] {
+        var newSections = sections
+        newSections = service.group(sections: newSections)
+        newSections = service.sort(sections: newSections)
+        return newSections
+    }
+    
     // 获取网络数据
-    fileprivate func fetchData(page: Int) -> Observable<Mutation> {
+    open func fetchData(page: Int) -> Observable<Mutation> {
         
-        guard !self.currentState.isLoading else { return .empty() }
-        
+        guard !self.currentState.isLoadingFirstPage else { return .empty() }
         let nextPage = page + 1
+        if nextPage > 1 {
+            guard !self.currentState.isLoadingNextPage else { return .empty() }
+        }
+        
+        // 当加载第一页的时候，禁止加载更多
         let request = service.request(page: nextPage)
+            .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            .takeUntil(self.isEndLoadNextPage(page: nextPage))
             .flatMap { [weak self] (result) -> Observable<Mutation> in
                 guard let strongSelf = self else { return .empty() }
                 guard let value = result.value else { return .just(.loadFailure(page: nextPage)) }
@@ -152,15 +200,24 @@ class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
                     newSections = value
                 }
                 return .just(.setSections(newSections, page: nextPage))
-        }
+            }
+            .observeOn(MainScheduler.instance)
         
-        var allObservable: [Observable<Mutation>]  = []
-        allObservable.append(.just(.setLoadingState(true)))
-        if page < 1 {
-            allObservable.append(.just(.beginLoadFirstPage))
-        }
-        allObservable.append(request)
-        allObservable.append(.just(.setLoadingState(false)))
-        return Observable<Mutation>.concat(allObservable)
+        var mutations: [Observable<Mutation>] = []
+        mutations.append(.just(.setLoadingState(true, page: nextPage)))
+        mutations.append(request)
+        mutations.append(.just(.setLoadingState(false, page: nextPage)))
+        return Observable<Mutation>.concat(mutations)
+    }
+    
+    // 当加载第一页的时候，禁止加载更多
+    open func isEndLoadNextPage(page: Int) -> Observable<Action> {
+        return self.action.filter({ action in
+            guard page > 1 else { return false }
+            if case .loadFirstPage = action {
+                return true
+            }
+            return false
+        })
     }
 }
