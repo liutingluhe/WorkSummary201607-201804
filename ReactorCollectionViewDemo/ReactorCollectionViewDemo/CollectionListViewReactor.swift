@@ -13,18 +13,19 @@ import ReactorKit
 
 class TestListService: BasicCollectionService {
     /// 模拟网络请求
-    override func request(page: Int) -> Observable<Result<[SectionType]>> {
-        var sections = [SectionType]()
-        let sectionModel = BasicListSectionModel(totalCount: 10, canLoadMore: page < 8)
+    override func request(page: Int, sections: [SectionType]) -> Observable<Result<[SectionType]>> {
+        var newSections = [SectionType]()
+        let sectionModel = BasicListSectionModel(totalCount: 10, canLoadMore: page < 5)
         let items = (0..<20).map({ _ -> TestCollectionViewCellReactor in
             let model = Model()
             model.title = "\(Int(arc4random_uniform(1200302)))"
             return TestCollectionViewCellReactor(model: model)
         })
         let section = SectionType(model: sectionModel, items: items)
-        sections.append(section)
+        newSections.append(section)
         print("request \(page)")
-        return Observable.just(.success(sections)).delay(3, scheduler: MainScheduler.instance)
+        return Observable.just(.success(newSections))
+            .delay(3, scheduler: MainScheduler.instance)
     }
 }
 

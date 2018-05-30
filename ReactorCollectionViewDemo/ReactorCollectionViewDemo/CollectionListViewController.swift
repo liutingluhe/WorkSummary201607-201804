@@ -28,6 +28,8 @@ class CollectionListViewController: UIViewController, View {
     
     func setupSubviews() {
         collectionView = BasicCollectionView(frame: self.view.bounds)
+        collectionView.headerRefreshClass = CustomHeaderRefreshView.self
+        collectionView.footerRefreshClass = CustomFooterRefreshView.self
         collectionView.register(TestCollectionViewCell.self, forCellWithReuseIdentifier: "TestCollectionViewCell")
         self.view.addSubview(collectionView)
     }
@@ -51,7 +53,7 @@ class CollectionListViewController: UIViewController, View {
             .disposed(by: disposeBag)
         
         collectionView.rx.itemSelected
-            .map({ BasicCollectionViewReactor.Action.selectIndexs([$0]) })
+            .map({ BasicCollectionViewReactor.Action.selectIndexes([$0]) })
             .bind(to: reactor.collectionReactor.action)
             .disposed(by: disposeBag)
     }

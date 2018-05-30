@@ -11,32 +11,38 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
+/// 刷新控件处理器
 open class BasicRefreshReactor: Reactor {
+    /// 刷新动作
     public enum Action {
         case startRefresh
         case stopRefresh
         case pull(progress: CGFloat)
-        case refresh(enable: Bool)
     }
-    
+    /// 刷新突变
     public enum Mutation {
         case setRefreshing(Bool)
         case setProgress(CGFloat)
-        case setRefreshEnable(Bool)
     }
-    
+    /// 刷新状态
     public struct State {
         public var isRefreshing: Bool = false
         public var progress: CGFloat = 0
-        public var isEnable: Bool = true
+        public var isHidden: Bool = true
     }
-    
+    /// 初始状态
     open var initialState: State = State()
+    /// 加载处理器
     open var loadingReactor: BasicLoadingReactor?
+    open var isHiddenWhenStop: Bool = false
     
-    public init() {
+    /// 初始化
+    public init(isHiddenWhenStop: Bool = false, isHiddenWhenInit: Bool = false) {
+        self.isHiddenWhenStop = isHiddenWhenStop
+        initialState.isHidden = isHiddenWhenInit
     }
     
+    /// 动作 -> 突变
     open func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .startRefresh:
@@ -48,24 +54,27 @@ open class BasicRefreshReactor: Reactor {
             return .just(.setRefreshing(false))
             
         case let .pull(progress):
+            if let loadingReactor = loadingReactor, !loadingReactor.currentState.isLoading {
+                loadingReactor.action.onNext(.progress(progress))
+            }
             return .just(.setProgress(progress))
-            
-        case let .refresh(enable):
-            return .just(.setRefreshEnable(enable))
         }
     }
     
+    /// 旧状态 + 突变 -> 新状态
     open func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
         case let .setRefreshing(isRefreshing):
             newState.isRefreshing = isRefreshing
+            if isHiddenWhenStop {
+                newState.isHidden = !isRefreshing
+            } else {
+                newState.isHidden = false
+            }
             
         case let .setProgress(value):
             newState.progress = value
-            
-        case let .setRefreshEnable(enable):
-            newState.isEnable = enable
         }
         return newState
     }

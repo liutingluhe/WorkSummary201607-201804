@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
+/// 继承 RxCollectionViewSectionedReloadDataSource，实现一个可以进行列表动画的数据源
 open class RxCollectionViewSectionedAnimatedReloadDataSource<S: AnimatableSectionModelType>
     : RxCollectionViewSectionedReloadDataSource<S> {
     

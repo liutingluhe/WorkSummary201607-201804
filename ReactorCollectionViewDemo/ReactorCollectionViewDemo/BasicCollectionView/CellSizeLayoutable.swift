@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
+/// 列表布局协议
 public protocol CellSizeLayoutable {
     var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel> { get }
     func getCellSize(indexPath: IndexPath) -> CGSize
@@ -18,6 +19,7 @@ public protocol CellSizeLayoutable {
     func getHeaderSize(section: Int) -> CGSize
 }
 
+/// 协议默认实现
 extension CellSizeLayoutable {
     public func getCellSize(indexPath: IndexPath) -> CGSize {
         if let section = dataSource.sectionModels.safeIndex(indexPath.section) {
