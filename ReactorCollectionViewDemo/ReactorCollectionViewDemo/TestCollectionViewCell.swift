@@ -11,6 +11,21 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
+extension UIView {
+    
+    /// 寻找当前视图所在的控制器
+    var responderController: UIViewController? {
+        var nextReponder: UIResponder? = self.next
+        while nextReponder != nil {
+            if let viewController = nextReponder as? UIViewController {
+                return viewController
+            }
+            nextReponder = nextReponder?.next
+        }
+        return nil
+    }
+}
+
 class TestCollectionViewCell: UICollectionViewCell, View {
     
     struct Constraint {
@@ -31,6 +46,10 @@ class TestCollectionViewCell: UICollectionViewCell, View {
         setupTitleLabel()
     }
     
+    deinit {
+        print("TestCollectionViewCell dealloc")
+    }
+    
     fileprivate func setupTitleLabel() {
         titleLabel = UILabel(frame: CGRect(origin: .zero, size: Constraint.cellSize))
         titleLabel.textColor = UIColor.red
@@ -47,5 +66,15 @@ class TestCollectionViewCell: UICollectionViewCell, View {
     func bind(reactor: TestCollectionViewCellReactor) {
         titleLabel.text = reactor.currentState.model.title
         backgroundColor = reactor.didSelected ? UIColor.blue : UIColor.green
+        
+        reactor.state.asObservable()
+            .filter({ $0.isPush })
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                print("isPush")
+                let listVCReactor = CollectionListViewReactor()
+                let listVC = CollectionListViewController(reactor: listVCReactor)
+                self?.responderController?.navigationController?.pushViewController(listVC, animated: true)
+            }).disposed(by: disposeBag)
     }
 }

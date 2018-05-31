@@ -108,6 +108,7 @@ open class BasicCollectionView: UICollectionView, View, UICollectionViewDelegate
     
     /// 绑定列表配置布局
     open func bindLayoutSource(reactor: BasicCollectionViewReactor) {
+        
         self.rx.setDelegate(self).disposed(by: disposeBag)
         
         // Cell/Footer/Header 高度默认设置
@@ -195,6 +196,12 @@ open class BasicCollectionView: UICollectionView, View, UICollectionViewDelegate
                 .drive(self.rx.reload)
                 .disposed(by: self.disposeBag)
         }
+        
+        // 选中某个 Cell
+        self.rx.itemSelected
+            .map({ Reactor.Action.selectIndexes([$0]) })
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     /// 添加顶部刷新控件

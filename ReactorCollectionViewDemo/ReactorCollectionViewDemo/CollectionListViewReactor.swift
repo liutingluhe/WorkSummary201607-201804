@@ -19,13 +19,17 @@ class TestListService: BasicCollectionService {
         let items = (0..<20).map({ _ -> TestCollectionViewCellReactor in
             let model = Model()
             model.title = "\(Int(arc4random_uniform(1200302)))"
-            return TestCollectionViewCellReactor(model: model)
+            return TestCollectionViewCellReactor(service: self, model: model)
         })
         let section = SectionType(model: sectionModel, items: items)
         newSections.append(section)
         print("request \(page)")
         return Observable.just(.success(newSections))
             .delay(3, scheduler: MainScheduler.instance)
+    }
+    
+    deinit {
+        print("TestListService dealloc")
     }
 }
 
@@ -43,5 +47,9 @@ class CollectionListViewReactor: Reactor {
     
     init() {
         collectionReactor = BasicCollectionViewReactor(service: service)
+    }
+    
+    deinit {
+        print("CollectionListViewReactor dealloc")
     }
 }

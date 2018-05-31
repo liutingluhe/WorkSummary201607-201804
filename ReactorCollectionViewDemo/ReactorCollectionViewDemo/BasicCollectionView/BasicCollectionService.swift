@@ -52,6 +52,8 @@ open class BasicCollectionService {
     public enum Event {
         case request(page: Int, result: Result<[SectionType]>)
         case sort(result: [SectionType])
+        case didSelectedItem(ItemType)
+        case selectItems([ItemType], result: [SectionType])
         case selectIndexes([IndexType], result: [SectionType])
         case insertItems([IndexType: ItemType], result: [SectionType])
         case deleteItems([ItemType], result: [SectionType])
@@ -71,7 +73,8 @@ open class BasicCollectionService {
     open var deletedItemsCache: [ItemType] = []
     open var sections: [SectionType] = []
     open var needCacheDeleted: Bool = false
-    open var isSelectedForNext: Bool = false
+    open var isSelectedNext: Bool = false
+    open var isSelectedForReloadData: Bool = false
     open var isCachePageData: Bool = false
     open var event = PublishSubject<Event>()
     
@@ -121,16 +124,40 @@ open class BasicCollectionService {
                 strongSelf.event.onNext(.sort(result: sections))
             })
     }
-    /// 列表选中索引，会触发 event
-    open func select(indexs: [IndexType]) -> Observable<[SectionType]> {
+    /// 列表选中元素，会触发 event
+    open func select(items: [ItemType]) -> Observable<[SectionType]> {
+        if !isSelectedForReloadData {
+            if let item = items.last {
+                self.event.onNext(.didSelectedItem(item))
+            }
+            return .empty()
+        }
         return self.fetchSections()
             .flatMap({ [weak self] (sections) -> Observable<[SectionType]> in
                 guard let strongSelf = self else { return .empty() }
-                return strongSelf.saveSections(strongSelf.select(indexs: indexs, sections: sections))
+                return strongSelf.saveSections(strongSelf.select(items: items, sections: sections))
             })
             .do(onNext: { [weak self] sections in
                 guard let strongSelf = self else { return }
-                strongSelf.event.onNext(.selectIndexes(indexs, result: sections))
+                strongSelf.event.onNext(.selectItems(items, result: sections))
+            })
+    }
+    /// 列表选中索引，会触发 event
+    open func select(indexes: [IndexType]) -> Observable<[SectionType]> {
+        if !isSelectedForReloadData {
+            if let index = indexes.last, let item = find(index: index, sections: sections) {
+                self.event.onNext(.didSelectedItem(item))
+            }
+            return .empty()
+        }
+        return self.fetchSections()
+            .flatMap({ [weak self] (sections) -> Observable<[SectionType]> in
+                guard let strongSelf = self else { return .empty() }
+                return strongSelf.saveSections(strongSelf.select(indexes: indexes, sections: sections))
+            })
+            .do(onNext: { [weak self] sections in
+                guard let strongSelf = self else { return }
+                strongSelf.event.onNext(.selectIndexes(indexes, result: sections))
             })
     }
     /// 列表插入元素，会触发 event
@@ -158,15 +185,15 @@ open class BasicCollectionService {
             })
     }
     /// 根据索引删除元素，会触发 event
-    open func delete(indexs: [IndexType]) -> Observable<[SectionType]> {
+    open func delete(indexes: [IndexType]) -> Observable<[SectionType]> {
         return self.fetchSections()
             .flatMap({ [weak self] (sections) -> Observable<[SectionType]> in
                 guard let strongSelf = self else { return .empty() }
-                return strongSelf.saveSections(strongSelf.delete(indexs: indexs, sections: sections))
+                return strongSelf.saveSections(strongSelf.delete(indexes: indexes, sections: sections))
             })
             .do(onNext: { [weak self] sections in
                 guard let strongSelf = self else { return }
-                strongSelf.event.onNext(.deleteIndexes(indexs, result: sections))
+                strongSelf.event.onNext(.deleteIndexes(indexes, result: sections))
             })
     }
     /// 更新元素，会触发 event
@@ -223,19 +250,40 @@ open class BasicCollectionService {
     open func sort(sections: [SectionType]) -> [SectionType] {
         return sections
     }
-    /// 列表选中
-    open func select(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
-        if isSelectedForNext {
-            return selectNext(indexs: indexs, sections: sections)
+    /// 列表选中索引
+    open func select(indexes: [IndexType], sections: [SectionType]) -> [SectionType] {
+        if isSelectedNext {
+            return selectNext(indexes: indexes, sections: sections)
         } else {
-            return selectNew(indexs: indexs, sections: sections)
+            return selectNew(indexes: indexes, sections: sections)
+        }
+    }
+    /// 列表选中元素
+    open func select(items: [ItemType], sections: [SectionType]) -> [SectionType] {
+        if isSelectedNext {
+            return selectNext(items: items, sections: sections)
+        } else {
+            return selectNew(items: items, sections: sections)
         }
     }
     /// 列表选中新选项组，移出之前选项组
-    open func selectNew(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
+    open func selectNew(indexes: [IndexType], sections: [SectionType]) -> [SectionType] {
         for (sectionIndex, section) in sections.enumerated() {
             for (itemIndex, item) in section.items.enumerated() {
-                if indexs.contains(IndexPath(row: itemIndex, section: sectionIndex)) {
+                if indexes.contains(IndexPath(row: itemIndex, section: sectionIndex)) {
+                    item.didSelected = true
+                } else {
+                    item.didSelected = false
+                }
+            }
+        }
+        return sections
+    }
+    /// 列表选中新选项组，移出之前选项组
+    open func selectNew(items: [ItemType], sections: [SectionType]) -> [SectionType] {
+        for section in sections {
+            for item in section.items {
+                if items.filter({ $0.identity == item.identity }).count > 0 {
                     item.didSelected = true
                 } else {
                     item.didSelected = false
@@ -245,15 +293,25 @@ open class BasicCollectionService {
         return sections
     }
     /// 列表选中下一个选项组到原来选项组，选中2次表示不选择
-    open func selectNext(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
-        indexs.forEach { (index) in
+    open func selectNext(indexes: [IndexType], sections: [SectionType]) -> [SectionType] {
+        indexes.forEach { (index) in
             if let item = find(index: index, sections: sections) {
                 item.didSelected = !item.didSelected
             }
         }
         return sections
     }
-    
+    /// 列表选中下一个选项组到原来选项组，选中2次表示不选择
+    open func selectNext(items: [ItemType], sections: [SectionType]) -> [SectionType] {
+        for section in sections {
+            for item in section.items {
+                if items.filter({ $0.identity == item.identity }).count > 0 {
+                    item.didSelected = !item.didSelected
+                }
+            }
+        }
+        return sections
+    }
     /// 列表插入元素
     open func insert(items: [IndexType: ItemType], sections: [SectionType]) -> [SectionType] {
         let soredItems = items.sorted(by: { $0.key < $1.key })
@@ -293,14 +351,14 @@ open class BasicCollectionService {
         return newSections
     }
     /// 列表删除元素，根据要删除的索引
-    open func delete(indexs: [IndexType], sections: [SectionType]) -> [SectionType] {
+    open func delete(indexes: [IndexType], sections: [SectionType]) -> [SectionType] {
         var newSections: [SectionType] = []
         for (sectionIndex, section) in sections.enumerated() {
-            if indexs.filter({ $0.section == sectionIndex }).count > 0 {
+            if indexes.filter({ $0.section == sectionIndex }).count > 0 {
                 var newSection = section
                 var newItems: [ItemType] = []
                 for (itemIndex, item) in newSection.items.enumerated() {
-                    if indexs.filter({ $0.section == sectionIndex && $0.item == itemIndex }).count == 0 {
+                    if indexes.filter({ $0.section == sectionIndex && $0.item == itemIndex }).count == 0 {
                         newItems.append(item)
                     } else {
                         if needCacheDeleted {
@@ -365,9 +423,9 @@ open class BasicCollectionService {
         return nil
     }
     /// 列表批量查找元素
-    open func find(indexs: [IndexType], sections: [SectionType]) -> [IndexType: ItemType] {
+    open func find(indexes: [IndexType], sections: [SectionType]) -> [IndexType: ItemType] {
         var result: [IndexType: ItemType] = [:]
-        indexs.forEach { (index) in
+        indexes.forEach { (index) in
             result[index] = find(index: index, sections: sections)
         }
         return result

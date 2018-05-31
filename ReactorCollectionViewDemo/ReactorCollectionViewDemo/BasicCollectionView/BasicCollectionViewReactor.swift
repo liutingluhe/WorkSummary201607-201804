@@ -19,9 +19,10 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         case loadNextPage
         case sort
         case selectIndexes([IndexPath])
+        case selectItems([BasicListItemModel])
         case insertItems([IndexPath: BasicListItemModel])
-        case deleteItems([BasicListItemModel])
         case deleteIndexes([IndexPath])
+        case deleteItems([BasicListItemModel])
         case updateSections([BasicListModel])
         case updateItems([BasicListItemModel])
         case replaceItems([IndexPath: BasicListItemModel])
@@ -32,6 +33,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         case setSections([BasicListModel], page: Int)
         case refreshSections([BasicListModel])
         case loadFailure(page: Int)
+        case didSelectedItem(BasicListItemModel)
     }
     /// 列表状态
     public struct State {
@@ -44,6 +46,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         var isLoadingFirstPage: Bool = false
         var isLoadingNextPage: Bool = false
         var canLoadMore: Bool = false
+        var currentSelectedItem: BasicListItemModel?
     }
     
     /// 初始状态
@@ -101,8 +104,11 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
             guard !isAutoSorted else { return .empty() } // 当开启自动排序，则该事件不响应
             return service.sort().flatMap({ _ in Observable.empty() })
             // 选中索引
-        case let .selectIndexes(indexs):
-            return service.select(indexs: indexs).flatMap({ _ in Observable.empty() })
+        case let .selectIndexes(indexes):
+            return service.select(indexes: indexes).flatMap({ _ in Observable.empty() })
+            // 选中元素
+        case let .selectItems(items):
+            return service.select(items: items).flatMap({ _ in Observable.empty() })
             // 插入元素
         case let .insertItems(items):
             return service.insert(items: items).flatMap({ _ in Observable.empty() })
@@ -110,8 +116,8 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         case let .deleteItems(items):
             return service.delete(items: items).flatMap({ _ in Observable.empty() })
             // 删除索引
-        case let .deleteIndexes(indexs):
-            return service.delete(indexs: indexs).flatMap({ _ in Observable.empty() })
+        case let .deleteIndexes(indexes):
+            return service.delete(indexes: indexes).flatMap({ _ in Observable.empty() })
             // 更新组
         case let .updateSections(sections):
             return service.update(sections: sections).flatMap({ _ in Observable.empty() })
@@ -157,22 +163,36 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
                 return .just(.loadFailure(page: page))
             }
             return .just(.setSections(value, page: page))
+            
         case let .sort(sections):
             return .just(.refreshSections(sections))
+            
         case let .selectIndexes(_, sections):
             return .just(.refreshSections(sections))
+            
+        case let .selectItems(_, sections):
+            return .just(.refreshSections(sections))
+            
         case let .insertItems(_, sections):
             return .just(.refreshSections(sections))
+            
         case let .deleteItems(_, sections):
             return .just(.refreshSections(sections))
+            
         case let .deleteIndexes(_, sections):
             return .just(.refreshSections(sections))
+            
         case let .updateItems(_, sections):
             return .just(.refreshSections(sections))
+            
         case let .updateSections(_, sections):
             return .just(.refreshSections(sections))
+            
         case let .replaceItems(_, sections):
             return .just(.refreshSections(sections))
+            
+        case let .didSelectedItem(item):
+            return .just(.didSelectedItem(item))
         }
     }
     
@@ -209,6 +229,10 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
             } else {
                 newState.isLoadNextPageSuccess = false
             }
+            
+        case let .didSelectedItem(item):
+            newState.currentSelectedItem = item
+            
         }
         return newState
     }
@@ -220,6 +244,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         newState.isFetchData = false
         newState.isLoadFirstPageSuccess = nil
         newState.isLoadNextPageSuccess = nil
+        newState.currentSelectedItem = nil
         return newState
     }
     

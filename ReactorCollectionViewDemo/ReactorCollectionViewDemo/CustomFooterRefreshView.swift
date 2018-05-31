@@ -23,6 +23,10 @@ class CustomFooterRefreshView: BasicFooterRefreshView {
         super.init(coder: aDecoder)
     }
     
+    deinit {
+        print("CustomFooterRefreshView dealloc")
+    }
+    
     open override func updateLoadMoreState() {
         if canLoadMore {
             self.backgroundColor = UIColor.blue

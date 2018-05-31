@@ -22,7 +22,7 @@ public extension Reactive where Base: UICollectionView {
     
     /// 内容尺寸大小
     public var contentSize: Observable<CGSize> {
-        return self.observe(CGSize.self, "contentSize")
+        return self.observeWeakly(CGSize.self, "contentSize")
             .map({ $0 ?? .zero })
     }
 }

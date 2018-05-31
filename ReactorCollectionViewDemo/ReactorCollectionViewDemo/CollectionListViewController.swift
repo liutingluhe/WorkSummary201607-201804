@@ -13,7 +13,7 @@ import RxCocoa
 
 class CollectionListViewController: UIViewController, View {
     
-    var collectionView: BasicCollectionView!
+    var collectionView: CustomCollectionView!
     var disposeBag = DisposeBag()
     
     init(reactor: CollectionListViewReactor) {
@@ -26,12 +26,15 @@ class CollectionListViewController: UIViewController, View {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("CollectionListViewController dealloc")
+    }
+    
     func setupSubviews() {
-        collectionView = BasicCollectionView(frame: self.view.bounds)
-        collectionView.headerRefreshClass = CustomHeaderRefreshView.self
-        collectionView.footerRefreshClass = CustomFooterRefreshView.self
+        collectionView = CustomCollectionView(frame: self.view.bounds)
         collectionView.register(TestCollectionViewCell.self, forCellWithReuseIdentifier: "TestCollectionViewCell")
         self.view.addSubview(collectionView)
+        self.view.backgroundColor = UIColor.white
     }
     
     func bind(reactor: CollectionListViewReactor) {
@@ -47,13 +50,9 @@ class CollectionListViewController: UIViewController, View {
         
         collectionView.reactor = reactor.collectionReactor
         
-        reactor.state.filter({ $0.isRefresh })
+        reactor.state.asObservable()
+            .filter({ $0.isRefresh })
             .map({ _ in BasicCollectionViewReactor.Action.loadFirstPage })
-            .bind(to: reactor.collectionReactor.action)
-            .disposed(by: disposeBag)
-        
-        collectionView.rx.itemSelected
-            .map({ BasicCollectionViewReactor.Action.selectIndexes([$0]) })
             .bind(to: reactor.collectionReactor.action)
             .disposed(by: disposeBag)
     }

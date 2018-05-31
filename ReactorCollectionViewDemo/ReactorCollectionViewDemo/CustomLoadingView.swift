@@ -21,4 +21,8 @@ class CustomLoadingView: BasicLoadingView {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
+    deinit {
+        print("CustomLoadingView dealloc")
+    }
 }
