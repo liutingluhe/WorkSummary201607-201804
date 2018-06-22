@@ -1,5 +1,5 @@
 //
-//  BasicHeaderRefreshView.swift
+//  RxBasicHeaderRefreshView.swift
 //  ReactorCollectionViewDemo
 //
 //  Created by luhe liu on 2018/5/30.
@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 
 /// 基础列表顶部刷新控件
-open class BasicHeaderRefreshView: BasicRefreshView {
+open class RxBasicHeaderRefreshView: RxBasicRefreshView {
     
     /// 是否需要在顶部刷新时设置 ContentOffset
     open var needSetContentOffset: Bool = true
@@ -29,7 +29,7 @@ open class BasicHeaderRefreshView: BasicRefreshView {
     open override var scrollMapToProgress: (CGFloat) -> CGFloat {
         return { [weak self] offsetY in
             guard let strongSelf = self, let scrollView = strongSelf.refreshView else { return 0.0 }
-            return (offsetY + scrollView.contentInset.top) / strongSelf.refreshHeight
+            return -(offsetY + scrollView.contentInset.top) / strongSelf.refreshHeight
         }
     }
     

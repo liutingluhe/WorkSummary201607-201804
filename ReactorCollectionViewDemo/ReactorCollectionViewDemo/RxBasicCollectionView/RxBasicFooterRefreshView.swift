@@ -1,5 +1,5 @@
 //
-//  BasicFooterRefreshView.swift
+//  RxBasicFooterRefreshView.swift
 //  ReactorCollectionViewDemo
 //
 //  Created by luhe liu on 2018/5/30.
@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 
 /// 基础列表底部刷新控件
-open class BasicFooterRefreshView: BasicRefreshView {
+open class RxBasicFooterRefreshView: RxBasicRefreshView {
     
     /// 是否需要在底部刷新后延时重置 ContentInsetBottom
     open var needDelayResetBottomInset: Bool = true

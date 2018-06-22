@@ -11,21 +11,6 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-extension UIView {
-    
-    /// 寻找当前视图所在的控制器
-    var responderController: UIViewController? {
-        var nextReponder: UIResponder? = self.next
-        while nextReponder != nil {
-            if let viewController = nextReponder as? UIViewController {
-                return viewController
-            }
-            nextReponder = nextReponder?.next
-        }
-        return nil
-    }
-}
-
 class TestCollectionViewCell: UICollectionViewCell, View {
     
     struct Constraint {
@@ -71,7 +56,6 @@ class TestCollectionViewCell: UICollectionViewCell, View {
             .filter({ $0.isPush })
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
-                print("isPush")
                 let listVCReactor = CollectionListViewReactor()
                 let listVC = CollectionListViewController(reactor: listVCReactor)
                 self?.responderController?.navigationController?.pushViewController(listVC, animated: true)

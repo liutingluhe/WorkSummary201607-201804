@@ -14,59 +14,40 @@ import RxDataSources
 import ReactorKit
 
 public typealias Result = Alamofire.Result
-public typealias BasicListModel = AnimatableSectionModel<BasicListSectionModel, BasicListItemModel>
-
-// MARK: - 基础的列表元素模型
-open class BasicListItemModel: IdentifiableType, Equatable {
-    open var identity: String = ""
-    open var cellSize: CGSize = .zero
-    open var didSelected: Bool = false
-    
-    public static func ==(lhs: BasicListItemModel, rhs: BasicListItemModel) -> Bool {
-        return lhs.identity == rhs.identity
-    }
-}
-
-// MARK: - 基础的列表组模型
-open class BasicListSectionModel: IdentifiableType, Equatable {
-    open var totalCount: Int = 0
-    open var canLoadMore: Bool = false
-    open var identity: String = ""
-    open var headerSize: CGSize = .zero
-    open var footerSize: CGSize = .zero
-    
-    public init(totalCount: Int = 0, canLoadMore: Bool = false) {
-        self.totalCount = totalCount
-        self.canLoadMore = canLoadMore
-    }
-
-    public static func ==(lhs: BasicListSectionModel, rhs: BasicListSectionModel) -> Bool {
-        return lhs.identity == rhs.identity
-    }
-}
 
 // MARK: - 基础列表服务
-open class BasicCollectionService {
+open class RxBasicCollectionService {
     
     /// 列表事件
     public enum Event {
+        /// 请求事件，参数：页数、列表数据
         case request(page: Int, result: Result<[SectionType]>)
+        /// 排序事件，参数：列表数据
         case sort(result: [SectionType])
+        /// 选中元素事件，参数：选中元素
         case didSelectedItem(ItemType)
+        /// 选择元素事件，参数：选择元素、列表数据
         case selectItems([ItemType], result: [SectionType])
+        /// 选择索引事件，参数：选择索引、列表数据
         case selectIndexes([IndexType], result: [SectionType])
+        /// 插入事件，参数：插入表、列表数据
         case insertItems([IndexType: ItemType], result: [SectionType])
+        /// 删除元素事件，参数：删除元素、列表数据
         case deleteItems([ItemType], result: [SectionType])
+        /// 删除索引事件，参数：删除索引、列表数据
         case deleteIndexes([IndexType], result: [SectionType])
+        /// 更新元素事件，参数：更新元素、列表数据
         case updateItems([ItemType], result: [SectionType])
+        /// 更新组事件，参数：更新组、列表数据
         case updateSections([SectionType], result: [SectionType])
+        /// 替换元素事件，参数：替换表、列表数据
         case replaceItems([IndexType: ItemType], result: [SectionType])
     }
     
     /// 类型
     public typealias IndexType = IndexPath
-    public typealias ItemType = BasicListItemModel
-    public typealias Section = BasicListSectionModel
+    public typealias ItemType = RxBasicListItem
+    public typealias Section = RxBasicListSection
     public typealias SectionType = AnimatableSectionModel<Section, ItemType>
     
     /// 属性
@@ -433,12 +414,12 @@ open class BasicCollectionService {
     /// 批量合并多组的所有元素
     open func mergeSections(_ oldSetions: [SectionType], with sections: [SectionType], isLoadMore: Bool) -> [SectionType] {
         var newSections: [SectionType] = []
-        sections.forEach { (section) in
-            if let oldSection = oldSetions.filter({ $0.model.identity == section.model.identity }).first {
+        oldSetions.forEach { (oldSection) in
+            if let section = sections.filter({ $0.model.identity == oldSection.model.identity }).first {
                 let newSection = mergeSection(oldSection, with: section, isLoadMore: isLoadMore)
                 newSections.append(newSection)
             } else {
-                newSections.append(section)
+                newSections.append(oldSection)
             }
         }
         return newSections

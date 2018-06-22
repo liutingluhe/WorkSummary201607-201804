@@ -28,7 +28,7 @@ public extension Reactive where Base: UICollectionView {
 }
 
 /// 基础加载控件 Rx 扩展
-public extension Reactive where Base: BasicLoadingView {
+public extension Reactive where Base: RxBasicLoadingView {
     /// 是否开始加载动画
     public var isAnimating: UIBindingObserver<Base, Bool> {
         return UIBindingObserver(UIElement: self.base) { view, active in
@@ -48,7 +48,7 @@ public extension Reactive where Base: BasicLoadingView {
 }
 
 /// 基础加载控件 Rx 扩展
-public extension Reactive where Base: BasicFooterRefreshView {
+public extension Reactive where Base: RxBasicFooterRefreshView {
     /// 是否可以加载更多
     public var canLoadMore: UIBindingObserver<Base, Bool> {
         return UIBindingObserver(UIElement: self.base) { view, canLoadMore in
@@ -57,15 +57,12 @@ public extension Reactive where Base: BasicFooterRefreshView {
     }
 }
 
-public extension Collection {
-    public func safeIndex(_ i: Int) -> Self.Iterator.Element? {
-        guard !isEmpty && count > abs(i) else { return nil }
-        
-        for item in self.enumerated() {
-            if item.offset == i {
-                return item.element
-            }
+/// 基础占位控件 Rx 扩展
+public extension Reactive where Base: RxBasicPlaceholderView {
+    /// 是否开始加载动画
+    public var isNetworkError: UIBindingObserver<Base, Bool> {
+        return UIBindingObserver(UIElement: self.base) { view, isError in
+            view.isNetworkError = isError
         }
-        return nil
     }
 }

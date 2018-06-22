@@ -1,5 +1,5 @@
 //
-//  BasicRefreshViewReactor.swift
+//  RxBasicRefreshViewReactor.swift
 //  ReactorCollectionViewDemo
 //
 //  Created by luhe liu on 2018/5/18.
@@ -12,7 +12,7 @@ import RxCocoa
 import ReactorKit
 
 /// 基础加载处理器
-open class BasicLoadingReactor: Reactor {
+open class RxBasicLoadingReactor: Reactor {
     /// 加载动作
     public enum Action {
         case startLoading

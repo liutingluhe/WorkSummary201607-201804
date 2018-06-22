@@ -32,7 +32,7 @@ class CollectionListViewController: UIViewController, View {
     
     func setupSubviews() {
         collectionView = CustomCollectionView(frame: self.view.bounds)
-        collectionView.register(TestCollectionViewCell.self, forCellWithReuseIdentifier: "TestCollectionViewCell")
+        collectionView.registerForCell(TestCollectionViewCell.self, isNib: false)
         self.view.addSubview(collectionView)
         self.view.backgroundColor = UIColor.white
     }
@@ -40,7 +40,7 @@ class CollectionListViewController: UIViewController, View {
     func bind(reactor: CollectionListViewReactor) {
         
         reactor.collectionReactor.dataSource.configureCell = { dataSource, collectionView, indexPath, element in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TestCollectionViewCell", for: indexPath) as! TestCollectionViewCell
+            let cell = collectionView.dequeueCell(TestCollectionViewCell.self, indexPath: indexPath)
             cell.reactor = element as? TestCollectionViewCellReactor
             return cell
         }
@@ -48,12 +48,13 @@ class CollectionListViewController: UIViewController, View {
             return UICollectionReusableView()
         }
         
-        collectionView.reactor = reactor.collectionReactor
+        collectionView.basicReactor = reactor.collectionReactor
         
         reactor.state.asObservable()
             .filter({ $0.isRefresh })
-            .map({ _ in BasicCollectionViewReactor.Action.loadFirstPage })
+            .map({ _ in RxBasicCollectionViewReactor.Action.loadFirstPage })
             .bind(to: reactor.collectionReactor.action)
             .disposed(by: disposeBag)
+        
     }
 }

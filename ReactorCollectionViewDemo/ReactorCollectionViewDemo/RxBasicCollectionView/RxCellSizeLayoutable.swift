@@ -1,5 +1,5 @@
 //
-//  CellSizeLayoutable.swift
+//  RxCellSizeLayoutable.swift
 //  RxTodo
 //
 //  Created by luhe liu on 2018/5/17.
@@ -12,15 +12,15 @@ import RxCocoa
 import RxDataSources
 
 /// 列表布局协议
-public protocol CellSizeLayoutable {
-    var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel> { get }
+public protocol RxCellSizeLayoutable {
+    var dataSource: RxCollectionViewSectionedReloadDataSource<RxBasicListModel> { get }
     func getCellSize(indexPath: IndexPath) -> CGSize
     func getFooterSize(section: Int) -> CGSize
     func getHeaderSize(section: Int) -> CGSize
 }
 
 /// 协议默认实现
-extension CellSizeLayoutable {
+extension RxCellSizeLayoutable {
     public func getCellSize(indexPath: IndexPath) -> CGSize {
         if let section = dataSource.sectionModels.safeIndex(indexPath.section) {
             if let item = section.items.safeIndex(indexPath.row) {

@@ -12,7 +12,7 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-class CustomFooterRefreshView: BasicFooterRefreshView {
+class CustomFooterRefreshView: RxBasicFooterRefreshView {
     
     required init(frame: CGRect, refreshView: UIScrollView?) {
         super.init(frame: frame, refreshView: refreshView)

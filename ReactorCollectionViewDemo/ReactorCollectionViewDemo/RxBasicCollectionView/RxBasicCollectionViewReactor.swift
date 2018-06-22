@@ -1,5 +1,5 @@
 //
-//  BasicCollectionViewReactor.swift
+//  RxBasicCollectionViewReactor.swift
 //  RxTodo
 //
 //  Created by luhe liu on 2018/5/16.
@@ -12,32 +12,32 @@ import RxDataSources
 import ReactorKit
 
 /// 基础列表处理器
-open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
+open class RxBasicCollectionViewReactor: Reactor, RxCellSizeLayoutable {
     /// 列表动作，加载/排序/选中/插入/删除/更新/替换
     public enum Action {
         case loadFirstPage
         case loadNextPage
         case sort
         case selectIndexes([IndexPath])
-        case selectItems([BasicListItemModel])
-        case insertItems([IndexPath: BasicListItemModel])
+        case selectItems([RxBasicListItem])
+        case insertItems([IndexPath: RxBasicListItem])
         case deleteIndexes([IndexPath])
-        case deleteItems([BasicListItemModel])
-        case updateSections([BasicListModel])
-        case updateItems([BasicListItemModel])
-        case replaceItems([IndexPath: BasicListItemModel])
+        case deleteItems([RxBasicListItem])
+        case updateSections([RxBasicListModel])
+        case updateItems([RxBasicListItem])
+        case replaceItems([IndexPath: RxBasicListItem])
     }
     /// 列表突变
     public enum Mutation {
         case setLoadingState(Bool, page: Int)
-        case setSections([BasicListModel], page: Int)
-        case refreshSections([BasicListModel])
+        case setSections([RxBasicListModel], page: Int)
+        case refreshSections([RxBasicListModel])
         case loadFailure(page: Int)
-        case didSelectedItem(BasicListItemModel)
+        case didSelectedItem(RxBasicListItem)
     }
     /// 列表状态
     public struct State {
-        var sections: [BasicListModel] = []
+        var sections: [RxBasicListModel] = []
         var currentPage: Int = 0
         var isRefresh: Bool = false
         var isFetchData: Bool = false
@@ -46,44 +46,46 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         var isLoadingFirstPage: Bool = false
         var isLoadingNextPage: Bool = false
         var canLoadMore: Bool = false
-        var currentSelectedItem: BasicListItemModel?
+        var currentSelectedItem: RxBasicListItem?
     }
     
     /// 初始状态
     open var initialState: State = State()
     /// 列表服务
-    open var service: BasicCollectionService
+    open var service: RxBasicCollectionService
     /// 是否需要列表动画
     open let isAnimated: Bool
     /// 是否自动排序
     open var isAutoSorted: Bool = true
     /// 列表数据源
-    open var dataSource: RxCollectionViewSectionedReloadDataSource<BasicListModel>
+    open var dataSource: RxCollectionViewSectionedReloadDataSource<RxBasicListModel>
     /// 顶部刷新处理器
-    open var headerRefreshReactor: BasicRefreshReactor?
+    open var headerRefreshReactor: RxBasicRefreshReactor?
     /// 底部刷新处理器
-    open var footerRefreshReactor: BasicRefreshReactor?
+    open var footerRefreshReactor: RxBasicRefreshReactor?
     
     /// 初始化
-    public init(service: BasicCollectionService, isAnimated: Bool = false, useDefaultRefresh: Bool = true) {
+    public init(service: RxBasicCollectionService, isAnimated: Bool = false, defaultRefresh: Bool = true) {
         self.service = service
         self.isAnimated = isAnimated
         if isAnimated {
-            dataSource = RxCollectionViewSectionedAnimatedReloadDataSource<BasicListModel>()
+            let animatedDataSource = RxCollectionViewSectionedAnimatedReloadDataSource<RxBasicListModel>()
+            animatedDataSource.isAutoUpdate = service.isSelectedForReloadData
+            dataSource = animatedDataSource
         } else {
-            dataSource = RxCollectionViewSectionedReloadDataSource<BasicListModel>()
+            dataSource = RxCollectionViewSectionedReloadDataSource<RxBasicListModel>()
         }
         initialState.sections = handleSections(service.sections)
         initialState.isRefresh = true
         // 使用默认刷新
-        if useDefaultRefresh {
+        if defaultRefresh {
             // 顶部下拉刷新
-            let headerRefreshReactor = BasicRefreshReactor(isHiddenWhenInit: false)
-            headerRefreshReactor.loadingReactor = BasicLoadingReactor()
+            let headerRefreshReactor = RxBasicRefreshReactor(isHiddenWhenInit: false)
+            headerRefreshReactor.loadingReactor = RxBasicLoadingReactor()
             self.headerRefreshReactor = headerRefreshReactor
             // 底部加载更多
-            let footerRefreshReactor = BasicRefreshReactor(isHiddenWhenInit: true)
-            footerRefreshReactor.loadingReactor = BasicLoadingReactor()
+            let footerRefreshReactor = RxBasicRefreshReactor(isHiddenWhenInit: true)
+            footerRefreshReactor.loadingReactor = RxBasicLoadingReactor()
             self.footerRefreshReactor = footerRefreshReactor
         }
     }
@@ -145,7 +147,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
                 // 触发顶部刷新控件和底部刷新控件的开始刷新和结束刷新事件
                 guard let strongSelf = self else { return }
                 if case let .setLoadingState(isLoading, page) = mutationValue {
-                    let refreshNext: BasicRefreshReactor.Action = isLoading ? .startRefresh : .stopRefresh
+                    let refreshNext: RxBasicRefreshReactor.Action = isLoading ? .startRefresh : .stopRefresh
                     if page <= 1 {
                         strongSelf.headerRefreshReactor?.action.onNext(refreshNext)
                     } else {
@@ -156,7 +158,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
     }
     
     /// 服务列表事件转成突变
-    func transformEventToMutation(event: BasicCollectionService.Event) -> Observable<Mutation> {
+    func transformEventToMutation(event: RxBasicCollectionService.Event) -> Observable<Mutation> {
         switch event {
         case let .request(page, result):
             guard let value = result.value else {
@@ -249,7 +251,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
     }
     
     /// 处理数据
-    open func handleSections(_ sections: [BasicListModel]) -> [BasicListModel] {
+    open func handleSections(_ sections: [RxBasicListModel]) -> [RxBasicListModel] {
         var newSections = sections
         if isAutoSorted {
             newSections = service.sort(sections: newSections)
@@ -290,7 +292,7 @@ open class BasicCollectionViewReactor: Reactor, CellSizeLayoutable {
         })
     }
     
-    open func checkListCanLoadMore(_ sections: [BasicListModel]) -> Bool {
+    open func checkListCanLoadMore(_ sections: [RxBasicListModel]) -> Bool {
         return sections.filter({ $0.model.canLoadMore }).count > 0
     }
 }

@@ -11,11 +11,14 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-class CustomHeaderRefreshView: BasicHeaderRefreshView {
+class CustomHeaderRefreshView: RxBasicHeaderRefreshView {
     
     required init(frame: CGRect, refreshView: UIScrollView?) {
         super.init(frame: frame, refreshView: refreshView)
-        loadingClass = CustomLoadingView.self
+        let logoLoadingView = LogoLoadingView(style: LogoLoadingStyle(style: .black))
+        logoLoadingView.center = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height * 0.5)
+        logoLoadingView.loadingHeight = self.frame.size.height
+        loadingView = logoLoadingView
     }
     
     public required init?(coder aDecoder: NSCoder) {

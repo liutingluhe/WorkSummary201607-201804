@@ -12,9 +12,9 @@ import RxCocoa
 import ReactorKit
 
 /// 基础加载控件
-open class BasicLoadingView: UIView, View {
+open class RxBasicLoadingView: UIView {
     /// 资源管理
-    open var disposeBag = DisposeBag()
+    open var basicDisposeBag = DisposeBag()
     /// 系统加载控件
     open lazy var indicatorView: UIActivityIndicatorView = {
         let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
@@ -25,7 +25,16 @@ open class BasicLoadingView: UIView, View {
     
     /// 是否正在加载
     open var isAnimated: Bool {
-        return self.reactor?.currentState.isLoading ?? false
+        return self.basicReactor?.currentState.isLoading ?? false
+    }
+    /// 基础刷新处理器
+    open var basicReactor: RxBasicLoadingReactor? {
+        didSet {
+            basicDisposeBag = DisposeBag()
+            if let basicReactor = basicReactor {
+                self.basicBind(reactor: basicReactor)
+            }
+        }
     }
     
     /// 初始化
@@ -44,14 +53,14 @@ open class BasicLoadingView: UIView, View {
     }
 
     /// 绑定事件
-    open func bind(reactor: BasicLoadingReactor) {
+    open func basicBind(reactor: RxBasicLoadingReactor) {
         
         reactor.state.asObservable()
             .map({ $0.isLoading })
             .distinctUntilChanged()
             .observeOn(MainScheduler.instance)
             .bind(to: self.rx.isAnimating)
-            .disposed(by: disposeBag)
+            .disposed(by: basicDisposeBag)
         
         reactor.state.asObservable()
             .filter({ $0.isProgress })
@@ -59,7 +68,7 @@ open class BasicLoadingView: UIView, View {
             .distinctUntilChanged()
             .observeOn(MainScheduler.instance)
             .bind(to: self.rx.progress)
-            .disposed(by: disposeBag)
+            .disposed(by: basicDisposeBag)
     }
     
     /// 开始加载动画

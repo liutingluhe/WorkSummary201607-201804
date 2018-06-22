@@ -1,8 +1,8 @@
 //
-//  CustomLoadingView.swift
+//  CustomPlaceholderView.swift
 //  ReactorCollectionViewDemo
 //
-//  Created by luhe liu on 2018/5/30.
+//  Created by luhe liu on 2018/6/21.
 //  Copyright © 2018年 luhe liu. All rights reserved.
 //
 
@@ -11,11 +11,11 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 
-class CustomLoadingView: RxBasicLoadingView {
+class CustomPlaceholderView: RxBasicPlaceholderView {
     
     required init(frame: CGRect) {
         super.init(frame: frame)
-        self.indicatorView.backgroundColor = UIColor.red
+        self.backgroundColor = UIColor.purple
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -23,6 +23,10 @@ class CustomLoadingView: RxBasicLoadingView {
     }
     
     deinit {
-        print("CustomLoadingView dealloc")
+        print("CustomPlaceholderView dealloc")
+    }
+    
+    override func updateSubviews() {
+        self.backgroundColor = isNetworkError ? UIColor.brown : UIColor.purple
     }
 }

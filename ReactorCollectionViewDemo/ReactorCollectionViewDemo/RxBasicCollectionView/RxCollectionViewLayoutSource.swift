@@ -8,21 +8,6 @@
 
 import UIKit
 
-/// 描述数据为空的协议，满足有个 zero 属性表示数据为空
-public protocol Zeroable {
-    static var zero: Self { get }
-}
-
-extension CGSize: Zeroable { }
-extension CGRect: Zeroable { }
-extension UIEdgeInsets: Zeroable { }
-
-extension CGFloat: Zeroable {
-    public static var zero: CGFloat {
-        return 0.0
-    }
-}
-
 /// 工具类，用于快捷配置布局
 open class Layout<Input, Output: Zeroable> {
     open var factory: (Input) -> Output = { _ in
@@ -35,7 +20,7 @@ open class Layout<Input, Output: Zeroable> {
 }
 
 /// 列表布局配置对象，用来配置列表布局属性
-open class CollectionViewLayoutSource {
+open class RxCollectionViewLayoutSource {
     
     public typealias SizeForCellFactory = (IndexPath) -> CGSize
     public typealias SupplementaryViewSizeFactory = (Int) -> CGSize

@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
-class TestCollectionViewCellReactor: BasicListItemModel, Reactor {
+class TestCollectionViewCellReactor: RxBasicListItem, Reactor {
     
     enum Action {
         case push
@@ -27,9 +27,9 @@ class TestCollectionViewCellReactor: BasicListItemModel, Reactor {
     }
     
     var initialState: State
-    unowned var service: BasicCollectionService
+    unowned var service: RxBasicCollectionService
     
-    init(service: BasicCollectionService, model: Model) {
+    init(service: RxBasicCollectionService, model: Model) {
         self.service = service
         self.initialState = State(model: model, isPush: false)
         super.init()
@@ -53,7 +53,7 @@ class TestCollectionViewCellReactor: BasicListItemModel, Reactor {
     }
     
     /// 服务列表事件转成突变
-    func transformEventToMutation(event: BasicCollectionService.Event) -> Observable<Mutation> {
+    func transformEventToMutation(event: RxBasicCollectionService.Event) -> Observable<Mutation> {
         switch event {
         case let .didSelectedItem(item):
             if item.identity == self.identity {
