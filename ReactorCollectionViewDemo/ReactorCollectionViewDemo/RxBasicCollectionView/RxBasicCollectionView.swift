@@ -19,6 +19,10 @@ open class RxBasicCollectionView: UICollectionView {
     open fileprivate(set) var scrollDirection: UICollectionViewScrollDirection = .vertical
     /// 列表刷新间隔
     open var reloadDebounceTime: TimeInterval = 0.3
+    /// 上次滑动偏移，用于 ContentOffset 突变处理
+    open var lastScrollOffset: CGPoint = .zero
+    /// 顺滑系数
+    open var smoothRatio: CGFloat = 0.2
     /// 列表布局
     open var layoutSource = RxCollectionViewLayoutSource()
     /// 资源管理
@@ -365,4 +369,40 @@ extension RxBasicCollectionView: UICollectionViewDelegateFlowLayout {
 // MARK: - 解决刷新前后 ContentOffset 突变问题
 extension RxBasicCollectionView {
     
+    open var smoothScrollOffset: CGPoint {
+        var scrollOffset: CGPoint = CGPoint(x: self.contentOffset.x + self.contentInset.left,
+                                            y: self.contentOffset.y + self.contentInset.top)
+        if let headerRefreshView = headerRefreshView {
+            var offset: CGFloat = 0
+            switch scrollDirection {
+            case .vertical:
+                offset = abs(lastScrollOffset.y - scrollOffset.y)
+            case .horizontal:
+                offset = abs(lastScrollOffset.x - scrollOffset.x)
+            }
+            if !headerRefreshView.isEndRefresh {
+                switch scrollDirection {
+                case .horizontal:
+                    scrollOffset.x = lastScrollOffset.x + offset * smoothRatio
+                case .vertical:
+                    scrollOffset.y = lastScrollOffset.y + offset * smoothRatio
+                }
+            }
+        }
+        lastScrollOffset = scrollOffset
+        return scrollOffset
+    }
+    
+    open func setContentInsetWithRefreshState(_ inset: UIEdgeInsets) {
+        var newInset = inset
+        if let headerRefreshView = headerRefreshView, headerRefreshView.isRefreshing {
+            switch scrollDirection {
+            case .vertical:
+                newInset.top += headerRefreshView.refreshHeight
+            case .horizontal:
+                newInset.left += headerRefreshView.refreshHeight
+            }
+        }
+        super.contentInset = newInset
+    }
 }

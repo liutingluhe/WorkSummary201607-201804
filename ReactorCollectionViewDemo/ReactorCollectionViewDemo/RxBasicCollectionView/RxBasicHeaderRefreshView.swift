@@ -19,12 +19,24 @@ open class RxBasicHeaderRefreshView: RxBasicRefreshView {
     /// 是否已经结束刷新
     open fileprivate(set) var isEndRefresh: Bool = true
     
+    open lazy var displayLink: CADisplayLink = {
+        let displayLink = CADisplayLink(target: self, selector: #selector(RxBasicHeaderRefreshView.refreshEnding))
+        displayLink.add(to: RunLoop.main, forMode: .commonModes)
+        displayLink.isPaused = true
+        return displayLink
+    }()
+    
     public required init(frame: CGRect, scrollView: UIScrollView?) {
         super.init(frame: frame, scrollView: scrollView)
     }
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    deinit {
+        displayLink.isPaused = true
+        displayLink.remove(from: RunLoop.main, forMode: .commonModes)
     }
     
     /// 滑动偏移转化为刷新进度，子类可重载进行修改
@@ -68,10 +80,19 @@ open class RxBasicHeaderRefreshView: RxBasicRefreshView {
     }
     
     open func willEndRefresh() {
+        displayLink.isPaused = false
     }
     
     open func didEndRefresh() {
+        displayLink.isPaused = true
         isEndRefresh = true
+    }
+    
+    @objc open func refreshEnding() {
+        guard let scrollView = self.scrollView else { return }
+        if let delegate = scrollView.delegate, let didScroll = delegate.scrollViewDidScroll {
+            didScroll(scrollView)
+        }
     }
     
     open func didFinishContentInsetReset() {
