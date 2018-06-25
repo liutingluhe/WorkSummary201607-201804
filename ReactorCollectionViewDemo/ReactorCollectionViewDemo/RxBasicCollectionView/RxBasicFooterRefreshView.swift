@@ -17,7 +17,7 @@ open class RxBasicFooterRefreshView: RxBasicRefreshView {
     /// 是否需要在底部刷新后延时重置 ContentInsetBottom
     open var needDelayResetBottomInset: Bool = true
     /// 是否已经重置了刷新间距
-    open var didResetBottomInset: Bool = true
+    open fileprivate(set) var didResetBottomInset: Bool = true
     /// 是否能加载更多
     open var canLoadMore: Bool = true {
         didSet {
@@ -28,13 +28,13 @@ open class RxBasicFooterRefreshView: RxBasicRefreshView {
     /// 滑动偏移转化为刷新进度，子类可重载进行修改
     open override var scrollMapToProgress: (CGFloat) -> CGFloat {
         return { [weak self] offsetY in
-            guard let strongSelf = self, let scrollView = strongSelf.refreshView else { return 0.0 }
+            guard let strongSelf = self, let scrollView = strongSelf.scrollView else { return 0.0 }
             return (offsetY - scrollView.contentSize.height + UIScreen.main.bounds.size.height) / strongSelf.refreshHeight
         }
     }
     
-    public required init(frame: CGRect, refreshView: UIScrollView?) {
-        super.init(frame: frame, refreshView: refreshView)
+    public required init(frame: CGRect, scrollView: UIScrollView?) {
+        super.init(frame: frame, scrollView: scrollView)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -48,7 +48,7 @@ open class RxBasicFooterRefreshView: RxBasicRefreshView {
     /// 用于底部刷新间距延时设置
     @objc open func delaySetContentInsetBottom(_ contentInset: CGFloat) {
         UIView.animate(withDuration: duration, delay: 0.0, options: .curveEaseInOut, animations: {
-            self.refreshView?.contentInset.bottom = contentInset
+            self.scrollView?.contentInset.bottom = contentInset
         }, completion: { _ in
             self.didResetBottomInset = true
         })
@@ -56,7 +56,7 @@ open class RxBasicFooterRefreshView: RxBasicRefreshView {
     
     /// 根据刷新状态重新设置顶部或底部刷新间距
     open override func resetScrollViewContentInset(isRefreshing: Bool) {
-        guard let scrollView = self.refreshView else { return }
+        guard let scrollView = self.scrollView else { return }
         var contentInset: CGFloat = scrollView.contentInset.bottom
         
         if isRefreshing {
@@ -67,7 +67,7 @@ open class RxBasicFooterRefreshView: RxBasicRefreshView {
             guard didResetBottomInset else { return }
             didResetBottomInset = false
             insetBeforRefresh = contentInset
-            contentInset += self.frame.size.height
+            contentInset += refreshHeight
             insetInRefreshing = contentInset
         } else {
             guard !didResetBottomInset else { return }

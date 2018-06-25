@@ -14,20 +14,20 @@ import ReactorKit
 /// 基础列表刷新控件
 open class RxBasicRefreshView: UIView {
 
-    /// 进入刷新前的滑动控件顶部/底部间距
+    /// 进入刷新前的滑动控件间距
     open var insetBeforRefresh: CGFloat = 0
-    /// 正在刷新时的滑动控件顶部/底部间距
+    /// 正在刷新时的滑动控件间距
     open var insetInRefreshing: CGFloat = 0
-    /// 加载控件类
+    /// 加载控件类，用于创建加载控件
     open var loadingClass: RxBasicLoadingView.Type = RxBasicLoadingView.self
-    /// 加载控件
+    /// 加载控件，用于创建加载控件
     open var loadingView: RxBasicLoadingView?
     /// 刷新间距变化动画时间
     open var duration: TimeInterval = 0.3
+    /// 将要刷新的滑动控件
+    open weak fileprivate(set) var scrollView: UIScrollView?
     /// 资源管理
     open var basicDisposeBag = DisposeBag()
-    /// 将要刷新的滑动控件
-    open weak fileprivate(set) var refreshView: UIScrollView?
     /// 基础刷新处理器
     open var basicReactor: RxBasicRefreshReactor? {
         didSet {
@@ -51,13 +51,19 @@ open class RxBasicRefreshView: UIView {
     
     /// 刷新高度默认为视图高度
     open var refreshHeight: CGFloat {
-        return max(1, self.frame.size.height)
+        var refreshValue: CGFloat = self.frame.size.height
+        if let scrollView = scrollView {
+            if scrollView.alwaysBounceHorizontal {
+                refreshValue = self.frame.size.width
+            }
+        }
+        return max(1, refreshValue)
     }
     
     /// 初始化方法
-    public required init(frame: CGRect, refreshView: UIScrollView?) {
+    public required init(frame: CGRect, scrollView: UIScrollView?) {
         super.init(frame: frame)
-        self.refreshView = refreshView
+        self.scrollView = scrollView
         setupSubviews()
     }
     /// 初始化方法
@@ -97,10 +103,8 @@ open class RxBasicRefreshView: UIView {
         
         // 刷新状态变化，重置刷新间距
         isRefreshingObservable
-            .subscribe(onNext: { [weak self] (isRefreshing) in
-                guard let strongSelf = self else { return }
-                strongSelf.resetScrollViewContentInset(isRefreshing: isRefreshing)
-            }).disposed(by: basicDisposeBag)
+            .bind(to: self.rx.isRefreshing)
+            .disposed(by: basicDisposeBag)
         
         // 结束刷新自动隐藏
         reactor.state.asObservable()
@@ -123,7 +127,7 @@ open class RxBasicRefreshView: UIView {
         }
         
         // 滑动事件监听，执行滑动动效
-        if let scrollView = self.refreshView {
+        if let scrollView = self.scrollView {
             scrollView.rx.contentOffset
                 .map({ [unowned self] in return self.scrollMapToProgress($0.y) })
                 .map({ RxBasicRefreshReactor.Action.pull(progress: $0) })

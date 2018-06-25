@@ -16,9 +16,11 @@ open class RxBasicHeaderRefreshView: RxBasicRefreshView {
     
     /// 是否需要在顶部刷新时设置 ContentOffset
     open var needSetContentOffset: Bool = true
+    /// 是否已经结束刷新
+    open fileprivate(set) var isEndRefresh: Bool = true
     
-    public required init(frame: CGRect, refreshView: UIScrollView?) {
-        super.init(frame: frame, refreshView: refreshView)
+    public required init(frame: CGRect, scrollView: UIScrollView?) {
+        super.init(frame: frame, scrollView: scrollView)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -28,28 +30,55 @@ open class RxBasicHeaderRefreshView: RxBasicRefreshView {
     /// 滑动偏移转化为刷新进度，子类可重载进行修改
     open override var scrollMapToProgress: (CGFloat) -> CGFloat {
         return { [weak self] offsetY in
-            guard let strongSelf = self, let scrollView = strongSelf.refreshView else { return 0.0 }
+            guard let strongSelf = self, let scrollView = strongSelf.scrollView else { return 0.0 }
             return -(offsetY + scrollView.contentInset.top) / strongSelf.refreshHeight
         }
     }
     
     /// 根据刷新状态重新设置顶部或底部刷新间距
     open override func resetScrollViewContentInset(isRefreshing: Bool) {
-        guard let scrollView = self.refreshView else { return }
+        guard let scrollView = self.scrollView else { return }
         var contentInset: CGFloat = scrollView.contentInset.top
         
         if isRefreshing {
             insetBeforRefresh = contentInset
-            contentInset += self.frame.size.height
+            contentInset += refreshHeight
             insetInRefreshing = contentInset
+            willRefresh()
         } else {
             contentInset -= insetInRefreshing - insetBeforRefresh
+            willEndRefresh()
         }
+        
         UIView.animate(withDuration: duration, delay: 0.0, options: .curveEaseInOut, animations: {
             scrollView.contentInset.top = contentInset
             if isRefreshing && self.needSetContentOffset {
                 scrollView.setContentOffset(CGPoint(x: 0, y: -contentInset), animated: true)
             }
+        }, completion: { _ in
+            self.didFinishContentInsetReset()
         })
+    }
+    
+    open func willRefresh() {
+        isEndRefresh = false
+    }
+    
+    open func didRefresh() {
+    }
+    
+    open func willEndRefresh() {
+    }
+    
+    open func didEndRefresh() {
+        isEndRefresh = true
+    }
+    
+    open func didFinishContentInsetReset() {
+        if isRefreshing {
+            didRefresh()
+        } else {
+            didEndRefresh()
+        }
     }
 }

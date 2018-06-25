@@ -32,6 +32,7 @@ class CollectionListViewController: UIViewController, View {
     
     func setupSubviews() {
         collectionView = CustomCollectionView(frame: self.view.bounds)
+        collectionView.contentInset.top = 64
         collectionView.registerForCell(TestCollectionViewCell.self, isNib: false)
         self.view.addSubview(collectionView)
         self.view.backgroundColor = UIColor.white

@@ -13,8 +13,15 @@ import RxCocoa
 
 class CustomHeaderRefreshView: RxBasicHeaderRefreshView {
     
-    required init(frame: CGRect, refreshView: UIScrollView?) {
-        super.init(frame: frame, refreshView: refreshView)
+    lazy var displayLink: CADisplayLink = {
+        let displayLink = CADisplayLink(target: self, selector: #selector(refreshEnding))
+        displayLink.add(to: RunLoop.main, forMode: .commonModes)
+        displayLink.isPaused = true
+        return displayLink
+    }()
+    
+    required init(frame: CGRect, scrollView: UIScrollView?) {
+        super.init(frame: frame, scrollView: scrollView)
         let logoLoadingView = LogoLoadingView(style: LogoLoadingStyle(style: .black))
         logoLoadingView.center = CGPoint(x: self.frame.size.width * 0.5, y: self.frame.size.height * 0.5)
         logoLoadingView.loadingHeight = self.frame.size.height
@@ -26,6 +33,24 @@ class CustomHeaderRefreshView: RxBasicHeaderRefreshView {
     }
     
     deinit {
+        displayLink.isPaused = true
         print("CustomHeaderRefreshView dealloc")
+    }
+    
+    override func willEndRefresh() {
+        super.willEndRefresh()
+        displayLink.isPaused = false
+    }
+    
+    override func didEndRefresh() {
+        super.didEndRefresh()
+        displayLink.isPaused = true
+    }
+    
+    @objc func refreshEnding() {
+        guard let scrollView = self.scrollView else { return }
+        if let delegate = scrollView.delegate, let didScroll = delegate.scrollViewDidScroll {
+            didScroll(scrollView)
+        }
     }
 }

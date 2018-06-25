@@ -27,6 +27,24 @@ public extension Reactive where Base: UICollectionView {
     }
 }
 
+/// 基础列表控件 Rx 扩展
+public extension Reactive where Base: RxBasicCollectionView {
+    public var footerFollow: UIBindingObserver<Base, CGFloat> {
+        return UIBindingObserver(UIElement: self.base) { view, contentHeight in
+            view.updateFooterRefeshViewState(with: contentHeight)
+        }
+    }
+}
+
+/// 基础刷新控件 Rx 扩展
+public extension Reactive where Base: RxBasicRefreshView {
+    public var isRefreshing: UIBindingObserver<Base, Bool> {
+        return UIBindingObserver(UIElement: self.base) { view, isRefreshing in
+            view.resetScrollViewContentInset(isRefreshing: isRefreshing)
+        }
+    }
+}
+
 /// 基础加载控件 Rx 扩展
 public extension Reactive where Base: RxBasicLoadingView {
     /// 是否开始加载动画

@@ -17,30 +17,12 @@ open class RxBasicCollectionView: UICollectionView {
     
     /// 列表滚动方向
     open fileprivate(set) var scrollDirection: UICollectionViewScrollDirection = .vertical
-    /// 资源管理
-    open var basicDisposeBag = DisposeBag()
     /// 列表刷新间隔
     open var reloadDebounceTime: TimeInterval = 0.3
     /// 列表布局
     open var layoutSource = RxCollectionViewLayoutSource()
-    
-    // MARK: 顶部刷新控件：是否可以加载/预加载间距/刷新控件高度/刷新控件类/刷新控件
-    open var canLoadFirst: Bool = true
-    open var preloadFirstInset: CGFloat = 100
-    open var defaultHeaderRefreshHeight: CGFloat = 100
-    open var headerRefreshClass: RxBasicHeaderRefreshView.Type = RxBasicHeaderRefreshView.self
-    open var headerRefreshView: RxBasicHeaderRefreshView?
-    
-    // MARK: 底部刷新控件：是否可以加载/预加载间距/刷新控件高度/刷新控件类/刷新控件
-    open var canLoadMore: Bool = true
-    open var preloadNextInset: CGFloat = 200
-    open var defaultFooterRefreshHeight: CGFloat = 100
-    open var footerRefreshClass: RxBasicFooterRefreshView.Type = RxBasicFooterRefreshView.self
-    open var footerRefreshView: RxBasicFooterRefreshView?
-    
-    // MARK: 列表占位控件
-    open var placeholderView: RxBasicPlaceholderView?
-    
+    /// 资源管理
+    open var basicDisposeBag = DisposeBag()
     /// 基础列表处理器
     open var basicReactor: RxBasicCollectionViewReactor? {
         didSet {
@@ -50,6 +32,35 @@ open class RxBasicCollectionView: UICollectionView {
             }
         }
     }
+    
+    // MARK: 顶部刷新控件
+    /// 是否可以加载第一页
+    open var canLoadFirst: Bool = true
+    /// 顶部加载间距
+    open var loadFirstInset: CGFloat = 100
+    /// 顶部刷新控件默认高度
+    open var defaultHeaderRefreshHeight: CGFloat = 100
+    /// 顶部刷新控件位置默认偏移
+    open var defaultHeaderRefreshOffsetY: CGFloat = 0
+    /// 顶部刷新控件类，用于创建顶部刷新控件
+    open var headerRefreshClass: RxBasicHeaderRefreshView.Type = RxBasicHeaderRefreshView.self
+    /// 顶部刷新控件，用于创建顶部刷新控件
+    open var headerRefreshView: RxBasicHeaderRefreshView?
+    
+    // MARK: 底部刷新控件
+    /// 是否可以加载更多
+    open var canLoadMore: Bool = true
+    /// 预加载间距
+    open var preloadNextInset: CGFloat = 200
+    /// 底部刷新控件默认高度
+    open var defaultFooterRefreshHeight: CGFloat = 100
+    /// 底部刷新控件类，用于创建底部刷新控件
+    open var footerRefreshClass: RxBasicFooterRefreshView.Type = RxBasicFooterRefreshView.self
+    /// 底部刷新控件，用于创建底部刷新控件
+    open var footerRefreshView: RxBasicFooterRefreshView?
+    
+    // MARK: 列表占位控件
+    open var placeholderView: RxBasicPlaceholderView?
     
     // MARK: 刷新状态判断
     /// 是否可以加载下一页
@@ -69,9 +80,9 @@ open class RxBasicCollectionView: UICollectionView {
         guard canLoadFirst else { return false }
         switch self.scrollDirection {
         case .vertical:
-            return contentOffset.y < -preloadFirstInset - contentInset.top
+            return contentOffset.y < -loadFirstInset - contentInset.top
         case .horizontal:
-            return contentOffset.x < -preloadFirstInset - contentInset.left
+            return contentOffset.x < -loadFirstInset - contentInset.left
         }
     }
     
@@ -90,11 +101,13 @@ open class RxBasicCollectionView: UICollectionView {
         self.scrollDirection = layout.scrollDirection
         super.init(frame: frame, collectionViewLayout: layout)
         configureCollectionView()
+        setupSubviews()
     }
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         configureCollectionView()
+        setupSubviews()
     }
     
     // MARK: 自定义方法
@@ -109,6 +122,10 @@ open class RxBasicCollectionView: UICollectionView {
         if #available(iOS 11.0, *) {
             self.contentInsetAdjustmentBehavior = .never
         }
+    }
+    
+    open func setupSubviews() {
+        
     }
 
     /// 动作绑定
@@ -161,11 +178,11 @@ extension RxBasicCollectionView {
         } else {
             let refreshFrame = CGRect(
                 x: 0,
-                y: self.contentInset.top - defaultHeaderRefreshHeight,
+                y: defaultHeaderRefreshOffsetY - defaultHeaderRefreshHeight,
                 width: self.bounds.size.width,
                 height: defaultHeaderRefreshHeight
             )
-            let refreshView = headerRefreshClass.init(frame: refreshFrame, refreshView: self)
+            let refreshView = headerRefreshClass.init(frame: refreshFrame, scrollView: self)
             refreshView.basicReactor = reactor
             self.addSubview(refreshView)
             self.headerRefreshView = refreshView
@@ -204,7 +221,7 @@ extension RxBasicCollectionView {
                 width: self.bounds.size.width,
                 height: defaultFooterRefreshHeight
             )
-            let refreshView = footerRefreshClass.init(frame: refreshFrame, refreshView: self)
+            let refreshView = footerRefreshClass.init(frame: refreshFrame, scrollView: self)
             refreshView.basicReactor = reactor
             self.addSubview(refreshView)
             self.footerRefreshView = refreshView
@@ -229,14 +246,8 @@ extension RxBasicCollectionView {
         self.rx.contentSize
             .map({ $0.height })
             .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: 0)
-            .drive(onNext: { [weak self] (contentHeight) in
-                guard let strongSelf = self, let refreshView = strongSelf.footerRefreshView else { return }
-                refreshView.frame.origin.y = contentHeight
-                if !refreshView.canLoadMore {
-                    refreshView.frame.origin.y = max(refreshView.frame.origin.y, strongSelf.frame.size.height)
-                }
-            }).disposed(by: basicDisposeBag)
+            .bind(to: self.rx.footerFollow)
+            .disposed(by: basicDisposeBag)
         
         /// 是否加载到了最后一页
         reactor.state.asObservable()
@@ -245,6 +256,21 @@ extension RxBasicCollectionView {
             .debounce(reloadDebounceTime, scheduler: MainScheduler.instance)
             .bind(to: footerRefreshView.rx.canLoadMore)
             .disposed(by: basicDisposeBag)
+    }
+    
+    /// 更新尾部控件状态
+    open func updateFooterRefeshViewState(with contentHeight: CGFloat) {
+        guard let refreshView = self.footerRefreshView else { return }
+        var isFooterHidden: Bool = false
+        refreshView.frame.origin.y = contentHeight
+        if !refreshView.canLoadMore {
+            if refreshView.frame.origin.y < self.frame.size.height {
+                isFooterHidden = true
+            } else {
+                refreshView.frame.origin.y = max(refreshView.frame.origin.y, self.frame.size.height)
+            }
+        }
+        refreshView.isHidden = isFooterHidden
     }
 }
 
@@ -333,4 +359,10 @@ extension RxBasicCollectionView: UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         return layoutSource.sizeForFooter.at(section)
     }
+}
+
+
+// MARK: - 解决刷新前后 ContentOffset 突变问题
+extension RxBasicCollectionView {
+    
 }

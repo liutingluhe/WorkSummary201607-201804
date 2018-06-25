@@ -11,6 +11,8 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 
+var testValue: Int = 0
+
 class TestListService: RxBasicCollectionService {
     
     override init() {
@@ -30,15 +32,22 @@ class TestListService: RxBasicCollectionService {
     /// 模拟网络请求
     override func request(page: Int, sections: [SectionType]) -> Observable<Result<[SectionType]>> {
         var newSections = [SectionType]()
-        let sectionModel = RxBasicListSection(totalCount: 10, canLoadMore: page < 5)
-        let items = (0..<20).map({ _ -> TestCollectionViewCellReactor in
-            let model = Model()
-            model.title = "\(Int(arc4random_uniform(1200302)))"
-            return TestCollectionViewCellReactor(service: self, model: model)
-        })
-        let section = SectionType(model: sectionModel, items: items)
-        newSections.append(section)
-        print("request \(page)")
+        if testValue == 0 {
+            let sectionModel = RxBasicListSection(totalCount: 20, canLoadMore: page < 3)
+            let items = (0..<20).map({ _ -> TestCollectionViewCellReactor in
+                let model = Model()
+                model.title = "\(Int(arc4random_uniform(1200302)))"
+                return TestCollectionViewCellReactor(service: self, model: model)
+            })
+            let section = SectionType(model: sectionModel, items: items)
+            newSections.append(section)
+        } else if testValue == 2 {
+            testValue = (testValue + 1) % 3
+            return Observable.just(.failure(NSError(domain: "dsa", code: 23, userInfo: nil)))
+                .delay(3, scheduler: MainScheduler.instance)
+        }
+        testValue = (testValue + 1) % 3
+        print("request \(page) \(testValue)")
         return Observable.just(.success(newSections))
             .delay(3, scheduler: MainScheduler.instance)
     }

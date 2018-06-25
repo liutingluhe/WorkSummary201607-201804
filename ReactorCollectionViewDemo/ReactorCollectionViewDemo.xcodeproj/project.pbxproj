@@ -27,6 +27,7 @@
 		C86A704220DB78120028EA52 /* UIView+Convenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C86A704120DB78120028EA52 /* UIView+Convenient.swift */; };
 		C86A706B20DB8DB00028EA52 /* RxBasicPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C86A706A20DB8DB00028EA52 /* RxBasicPlaceholderView.swift */; };
 		C86A706D20DB93D60028EA52 /* CustomPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C86A706C20DB93D60028EA52 /* CustomPlaceholderView.swift */; };
+		C87ECE0620E0803E0017E9AF /* PulseLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87ECE0520E0803E0017E9AF /* PulseLoadingView.swift */; };
 		C8ACAD6C20B6B2F000633A48 /* RxBasicRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8ACAD6B20B6B2F000633A48 /* RxBasicRefreshView.swift */; };
 		C8ACAD6E20B6CA1500633A48 /* RxBasicRefreshReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8ACAD6D20B6CA1500633A48 /* RxBasicRefreshReactor.swift */; };
 		C8B64AFD20AEA0FD00358030 /* TestCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B64AFC20AEA0FD00358030 /* TestCollectionViewCell.swift */; };
@@ -38,7 +39,6 @@
 		C8D2B28F20BFD1F40013AD42 /* CustomCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D2B28E20BFD1F40013AD42 /* CustomCollectionView.swift */; };
 		C8E6ECC820DCFB3A00B26B43 /* LogoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E6ECC720DCFB3A00B26B43 /* LogoLoadingView.swift */; };
 		C8F3B82420BEA36D0064D0A5 /* CustomHeaderRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F3B82320BEA36D0064D0A5 /* CustomHeaderRefreshView.swift */; };
-		C8F3B82620BEA3940064D0A5 /* CustomLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F3B82520BEA3940064D0A5 /* CustomLoadingView.swift */; };
 		C8F3B82820BEA3A10064D0A5 /* CustomFooterRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F3B82720BEA3A10064D0A5 /* CustomFooterRefreshView.swift */; };
 		C8F3B82A20BEA70D0064D0A5 /* RxBasicHeaderRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F3B82920BEA70D0064D0A5 /* RxBasicHeaderRefreshView.swift */; };
 		C8F3B82C20BEA7240064D0A5 /* RxBasicFooterRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F3B82B20BEA7240064D0A5 /* RxBasicFooterRefreshView.swift */; };
@@ -68,6 +68,7 @@
 		C86A704120DB78120028EA52 /* UIView+Convenient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Convenient.swift"; sourceTree = "<group>"; };
 		C86A706A20DB8DB00028EA52 /* RxBasicPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxBasicPlaceholderView.swift; sourceTree = "<group>"; };
 		C86A706C20DB93D60028EA52 /* CustomPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlaceholderView.swift; sourceTree = "<group>"; };
+		C87ECE0520E0803E0017E9AF /* PulseLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseLoadingView.swift; sourceTree = "<group>"; };
 		C8ACAD6B20B6B2F000633A48 /* RxBasicRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxBasicRefreshView.swift; sourceTree = "<group>"; };
 		C8ACAD6D20B6CA1500633A48 /* RxBasicRefreshReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxBasicRefreshReactor.swift; sourceTree = "<group>"; };
 		C8B64AFC20AEA0FD00358030 /* TestCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -79,7 +80,6 @@
 		C8D2B28E20BFD1F40013AD42 /* CustomCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionView.swift; sourceTree = "<group>"; };
 		C8E6ECC720DCFB3A00B26B43 /* LogoLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoLoadingView.swift; sourceTree = "<group>"; };
 		C8F3B82320BEA36D0064D0A5 /* CustomHeaderRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderRefreshView.swift; sourceTree = "<group>"; };
-		C8F3B82520BEA3940064D0A5 /* CustomLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLoadingView.swift; sourceTree = "<group>"; };
 		C8F3B82720BEA3A10064D0A5 /* CustomFooterRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFooterRefreshView.swift; sourceTree = "<group>"; };
 		C8F3B82920BEA70D0064D0A5 /* RxBasicHeaderRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxBasicHeaderRefreshView.swift; sourceTree = "<group>"; };
 		C8F3B82B20BEA7240064D0A5 /* RxBasicFooterRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxBasicFooterRefreshView.swift; sourceTree = "<group>"; };
@@ -140,7 +140,7 @@
 				C85499A420AD848C004A0831 /* AppDelegate.swift */,
 				C8B64B0020AEA14700358030 /* Model.swift */,
 				C8E6ECC720DCFB3A00B26B43 /* LogoLoadingView.swift */,
-				C8F3B82520BEA3940064D0A5 /* CustomLoadingView.swift */,
+				C87ECE0520E0803E0017E9AF /* PulseLoadingView.swift */,
 				C86A706C20DB93D60028EA52 /* CustomPlaceholderView.swift */,
 				C8F3B82320BEA36D0064D0A5 /* CustomHeaderRefreshView.swift */,
 				C8F3B82720BEA3A10064D0A5 /* CustomFooterRefreshView.swift */,
@@ -172,8 +172,8 @@
 				C86A703920DB417C0028EA52 /* RxBasicListModel.swift */,
 				C85499BB20AD8801004A0831 /* RxCollectionViewSectionedAnimatedReloadDataSource.swift */,
 				C85499BD20AD8801004A0831 /* RxCollectionViewLayoutSource.swift */,
-				C85499BA20AD8801004A0831 /* RxBasicCollectionView+Rx.swift */,
 				C85499B920AD8801004A0831 /* RxCellSizeLayoutable.swift */,
+				C85499BA20AD8801004A0831 /* RxBasicCollectionView+Rx.swift */,
 				C8C90A7720C4E73600F2E2E8 /* UICollectionView+Convenient.swift */,
 				C86A703F20DB43830028EA52 /* Array+Convenient.swift */,
 				C86A704120DB78120028EA52 /* UIView+Convenient.swift */,
@@ -308,13 +308,13 @@
 				C8B64B0320AEC88000358030 /* RxBasicLoadingView.swift in Sources */,
 				C86A703A20DB417C0028EA52 /* RxBasicListModel.swift in Sources */,
 				C8D2B28F20BFD1F40013AD42 /* CustomCollectionView.swift in Sources */,
+				C87ECE0620E0803E0017E9AF /* PulseLoadingView.swift in Sources */,
 				C85499C420AD8801004A0831 /* RxCollectionViewLayoutSource.swift in Sources */,
 				C8F3B82820BEA3A10064D0A5 /* CustomFooterRefreshView.swift in Sources */,
 				C8B64B0520AEC99C00358030 /* RxBasicLoadingReactor.swift in Sources */,
 				C85499C220AD8801004A0831 /* RxCollectionViewSectionedAnimatedReloadDataSource.swift in Sources */,
 				C85499BE20AD8801004A0831 /* RxBasicCollectionViewReactor.swift in Sources */,
 				C8B64AFD20AEA0FD00358030 /* TestCollectionViewCell.swift in Sources */,
-				C8F3B82620BEA3940064D0A5 /* CustomLoadingView.swift in Sources */,
 				C8B64B0120AEA14700358030 /* Model.swift in Sources */,
 				C86A704220DB78120028EA52 /* UIView+Convenient.swift in Sources */,
 				C85499C020AD8801004A0831 /* RxCellSizeLayoutable.swift in Sources */,

@@ -14,13 +14,28 @@ import RxCocoa
 
 class CustomFooterRefreshView: RxBasicFooterRefreshView {
     
-    required init(frame: CGRect, refreshView: UIScrollView?) {
-        super.init(frame: frame, refreshView: refreshView)
-        loadingClass = CustomLoadingView.self
+    lazy var endLoadLabel: UILabel = {
+        let endLoadLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: 50))
+        endLoadLabel.backgroundColor = UIColor.clear
+        endLoadLabel.text = "- END -"
+        endLoadLabel.textColor = UIColor.black
+        endLoadLabel.font = UIFont.systemFont(ofSize: 11)
+        endLoadLabel.textAlignment = .center
+        endLoadLabel.isHidden = true
+        return endLoadLabel
+    }()
+    
+    required init(frame: CGRect, scrollView: UIScrollView?) {
+        super.init(frame: frame, scrollView: scrollView)
+        loadingClass = PulseLoadingView.self
     }
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    override func setupSubviews() {
+        self.addSubview(endLoadLabel)
     }
     
     deinit {
@@ -28,11 +43,8 @@ class CustomFooterRefreshView: RxBasicFooterRefreshView {
     }
     
     open override func updateLoadMoreState() {
-        if canLoadMore {
-            self.backgroundColor = UIColor.blue
-        } else {
-            self.backgroundColor = UIColor.darkGray
-        }
+        loadingView?.isHidden = !canLoadMore
+        endLoadLabel.isHidden = canLoadMore
     }
     
 }

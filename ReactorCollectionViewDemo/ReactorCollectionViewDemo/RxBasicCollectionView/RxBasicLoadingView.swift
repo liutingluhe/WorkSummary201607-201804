@@ -13,8 +13,6 @@ import ReactorKit
 
 /// 基础加载控件
 open class RxBasicLoadingView: UIView {
-    /// 资源管理
-    open var basicDisposeBag = DisposeBag()
     /// 系统加载控件
     open lazy var indicatorView: UIActivityIndicatorView = {
         let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
@@ -27,6 +25,8 @@ open class RxBasicLoadingView: UIView {
     open var isAnimated: Bool {
         return self.basicReactor?.currentState.isLoading ?? false
     }
+    /// 资源管理
+    open var basicDisposeBag = DisposeBag()
     /// 基础刷新处理器
     open var basicReactor: RxBasicLoadingReactor? {
         didSet {
