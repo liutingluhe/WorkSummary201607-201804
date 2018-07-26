@@ -1,0 +1,63 @@
+PODS:
+  - Alamofire (4.5.0)
+  - Kingfisher (3.10.2)
+  - ReactorKit (0.6.0):
+    - RxSwift (>= 3.0.0)
+  - RxCocoa (3.6.1):
+    - RxSwift (~> 3.6)
+  - RxDataSources (1.0.4):
+    - RxCocoa (~> 3.0)
+    - RxSwift (~> 3.0)
+  - RxGesture (1.1.1):
+    - RxCocoa (~> 3.6)
+    - RxSwift (~> 3.6)
+  - RxSwift (3.6.1)
+  - SnapKit (3.1.2)
+  - SwiftyUserDefaults (3.0.0)
+
+DEPENDENCIES:
+  - Alamofire (= 4.5.0)
+  - Kingfisher (= 3.10.2)
+  - ReactorKit (= 0.6.0)
+  - RxCocoa (= 3.6.1)
+  - RxDataSources (= 1.0.4)
+  - RxGesture (from `https://github.com/RxSwiftCommunity/RxGesture.git`, branch `swift-3`)
+  - RxSwift (= 3.6.1)
+  - SnapKit (= 3.1.2)
+  - SwiftyUserDefaults (= 3.0.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - Kingfisher
+    - ReactorKit
+    - RxCocoa
+    - RxDataSources
+    - RxSwift
+    - SnapKit
+    - SwiftyUserDefaults
+
+EXTERNAL SOURCES:
+  RxGesture:
+    :branch: swift-3
+    :git: https://github.com/RxSwiftCommunity/RxGesture.git
+
+CHECKOUT OPTIONS:
+  RxGesture:
+    :commit: e90294d522462e44bfaca0d3da452e841d124c4b
+    :git: https://github.com/RxSwiftCommunity/RxGesture.git
+
+SPEC CHECKSUMS:
+  Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  Kingfisher: 7297492bf8cec9b2e2dee3519f2219948580d98e
+  ReactorKit: d979377df0ff393cb0ed4df9c2b31b2edd8dca08
+  RxCocoa: 84a08739ab186248c7f31ce4ee92d6f8a947d690
+  RxDataSources: b3389acc5fe2eefb8fcd81a2b76a876ad08bc82a
+  RxGesture: 1c9c4d5df084cbaa8b99b45bdd0a7c07f7a124f6
+  RxSwift: f9de85ea20cd2f7716ee5409fc13523dc638e4e4
+  SnapKit: 12b24f569cb7c143acc9c22b9d91b23e7b1c84a2
+  SwiftyUserDefaults: 0f1d45fc3aafb9064dac661e367f8f83fe21a4b4
+
+PODFILE CHECKSUM: af5a6078f9067d2e3488e64dc4ce7afcc09f3f90
+
+COCOAPODS: 1.5.2

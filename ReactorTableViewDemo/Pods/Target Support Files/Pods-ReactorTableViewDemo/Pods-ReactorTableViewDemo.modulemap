@@ -1,0 +1,6 @@
+framework module Pods_ReactorTableViewDemo {
+  umbrella header "Pods-ReactorTableViewDemo-umbrella.h"
+
+  export *
+  module * { export * }
+}
