@@ -7,8 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C82670F8210AAD53008DE959 /* TestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670F3210AAD52008DE959 /* TestTableViewCell.swift */; };
+		C82670F9210AAD53008DE959 /* TestTableViewCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670F4210AAD52008DE959 /* TestTableViewCellReactor.swift */; };
+		C82670FA210AAD53008DE959 /* TableListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670F5210AAD52008DE959 /* TableListViewController.swift */; };
+		C82670FB210AAD53008DE959 /* TableListViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670F6210AAD52008DE959 /* TableListViewReactor.swift */; };
+		C82670FC210AAD53008DE959 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670F7210AAD53008DE959 /* Model.swift */; };
+		C8267103210AB4CA008DE959 /* CustomPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670FD210AB4CA008DE959 /* CustomPlaceholderView.swift */; };
+		C8267104210AB4CA008DE959 /* LogoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670FE210AB4CA008DE959 /* LogoLoadingView.swift */; };
+		C8267105210AB4CA008DE959 /* PulseLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82670FF210AB4CA008DE959 /* PulseLoadingView.swift */; };
+		C8267106210AB4CA008DE959 /* CustomHeaderRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8267100210AB4CA008DE959 /* CustomHeaderRefreshView.swift */; };
+		C8267107210AB4CA008DE959 /* CustomFooterRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8267101210AB4CA008DE959 /* CustomFooterRefreshView.swift */; };
+		C8267108210AB4CB008DE959 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8267102210AB4CA008DE959 /* CustomTableView.swift */; };
 		C8AAC31C2109CC5400AFBFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AAC31B2109CC5400AFBFC6 /* AppDelegate.swift */; };
-		C8AAC31E2109CC5400AFBFC6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AAC31D2109CC5400AFBFC6 /* ViewController.swift */; };
 		C8AAC3212109CC5400AFBFC6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8AAC31F2109CC5400AFBFC6 /* Main.storyboard */; };
 		C8AAC3232109CC5600AFBFC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8AAC3222109CC5600AFBFC6 /* Assets.xcassets */; };
 		C8AAC3262109CC5600AFBFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8AAC3242109CC5600AFBFC6 /* LaunchScreen.storyboard */; };
@@ -79,9 +89,19 @@
 		72EC52BD8F11C73A824B373C /* Pods-ReactorTableViewDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactorTableViewDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-ReactorTableViewDemo/Pods-ReactorTableViewDemo.release.xcconfig"; sourceTree = "<group>"; };
 		792381CACBF8577103DD734A /* Pods_ReactorTableViewDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReactorTableViewDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C38BC31BCF1E288C3E3D6C42 /* Pods-ReactorTableViewDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactorTableViewDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReactorTableViewDemo/Pods-ReactorTableViewDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		C82670F3210AAD52008DE959 /* TestTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewCell.swift; sourceTree = "<group>"; };
+		C82670F4210AAD52008DE959 /* TestTableViewCellReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewCellReactor.swift; sourceTree = "<group>"; };
+		C82670F5210AAD52008DE959 /* TableListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableListViewController.swift; sourceTree = "<group>"; };
+		C82670F6210AAD52008DE959 /* TableListViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableListViewReactor.swift; sourceTree = "<group>"; };
+		C82670F7210AAD53008DE959 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		C82670FD210AB4CA008DE959 /* CustomPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPlaceholderView.swift; sourceTree = "<group>"; };
+		C82670FE210AB4CA008DE959 /* LogoLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogoLoadingView.swift; sourceTree = "<group>"; };
+		C82670FF210AB4CA008DE959 /* PulseLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PulseLoadingView.swift; sourceTree = "<group>"; };
+		C8267100210AB4CA008DE959 /* CustomHeaderRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomHeaderRefreshView.swift; sourceTree = "<group>"; };
+		C8267101210AB4CA008DE959 /* CustomFooterRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomFooterRefreshView.swift; sourceTree = "<group>"; };
+		C8267102210AB4CA008DE959 /* CustomTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
 		C8AAC3182109CC5400AFBFC6 /* ReactorTableViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReactorTableViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8AAC31B2109CC5400AFBFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C8AAC31D2109CC5400AFBFC6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C8AAC3202109CC5400AFBFC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C8AAC3222109CC5600AFBFC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C8AAC3252109CC5600AFBFC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -193,7 +213,17 @@
 				C8AAC32E2109CD5300AFBFC6 /* Utility */,
 				C8AAC32D2109CD2700AFBFC6 /* RxBasicTableView */,
 				C8AAC31B2109CC5400AFBFC6 /* AppDelegate.swift */,
-				C8AAC31D2109CC5400AFBFC6 /* ViewController.swift */,
+				C82670F7210AAD53008DE959 /* Model.swift */,
+				C82670F5210AAD52008DE959 /* TableListViewController.swift */,
+				C82670F6210AAD52008DE959 /* TableListViewReactor.swift */,
+				C82670F3210AAD52008DE959 /* TestTableViewCell.swift */,
+				C82670F4210AAD52008DE959 /* TestTableViewCellReactor.swift */,
+				C8267102210AB4CA008DE959 /* CustomTableView.swift */,
+				C8267101210AB4CA008DE959 /* CustomFooterRefreshView.swift */,
+				C8267100210AB4CA008DE959 /* CustomHeaderRefreshView.swift */,
+				C82670FD210AB4CA008DE959 /* CustomPlaceholderView.swift */,
+				C82670FE210AB4CA008DE959 /* LogoLoadingView.swift */,
+				C82670FF210AB4CA008DE959 /* PulseLoadingView.swift */,
 				C8AAC31F2109CC5400AFBFC6 /* Main.storyboard */,
 				C8AAC3222109CC5600AFBFC6 /* Assets.xcassets */,
 				C8AAC3242109CC5600AFBFC6 /* LaunchScreen.storyboard */,
@@ -465,20 +495,27 @@
 				C8AAC3A02109CD5300AFBFC6 /* BasicGIFImageView.swift in Sources */,
 				C8AAC3B02109DA0500AFBFC6 /* RxRowHeightLayoutable.swift in Sources */,
 				C8AAC3842109CD5300AFBFC6 /* RxBasicListService.swift in Sources */,
+				C82670F8210AAD53008DE959 /* TestTableViewCell.swift in Sources */,
 				C8AAC3962109CD5300AFBFC6 /* ScreenAdapter.swift in Sources */,
+				C82670FC210AAD53008DE959 /* Model.swift in Sources */,
+				C8267107210AB4CA008DE959 /* CustomFooterRefreshView.swift in Sources */,
 				C8AAC38A2109CD5300AFBFC6 /* NSDictionary+Convenient.swift in Sources */,
 				C8AAC39A2109CD5300AFBFC6 /* Zeroable.swift in Sources */,
 				C8AAC38B2109CD5300AFBFC6 /* UIControl+Convenient.swift in Sources */,
 				C8AAC37E2109CD5300AFBFC6 /* RxBasicLoadingReactor.swift in Sources */,
 				C8AAC3992109CD5300AFBFC6 /* ClassNamable.swift in Sources */,
 				C8AAC3742109CD5300AFBFC6 /* WKWebview+RxConvenient.swift in Sources */,
+				C8267103210AB4CA008DE959 /* CustomPlaceholderView.swift in Sources */,
 				C8AAC3782109CD5300AFBFC6 /* RxBasicPlaceholderView.swift in Sources */,
+				C8267104210AB4CA008DE959 /* LogoLoadingView.swift in Sources */,
+				C8267105210AB4CA008DE959 /* PulseLoadingView.swift in Sources */,
 				C8AAC38F2109CD5300AFBFC6 /* CAShaperLayer+Convenient.swift in Sources */,
 				C8AAC3912109CD5300AFBFC6 /* Date+Convenient.swift in Sources */,
 				C8AAC3832109CD5300AFBFC6 /* RxCollectionViewSectionedAnimatedReloadDataSource.swift in Sources */,
 				C8AAC3862109CD5300AFBFC6 /* UIFont+Convenient.swift in Sources */,
 				C8AAC36F2109CD5300AFBFC6 /* UILabel+RxConvenient.swift in Sources */,
 				C8AAC39C2109CD5300AFBFC6 /* Cancellable.swift in Sources */,
+				C8267106210AB4CA008DE959 /* CustomHeaderRefreshView.swift in Sources */,
 				C8AAC37F2109CD5300AFBFC6 /* RxBasicLoadingView.swift in Sources */,
 				C8AAC3752109CD5300AFBFC6 /* UICollectionView+RxCovenient.swift in Sources */,
 				C8AAC3AE2109D88000AFBFC6 /* RxTableViewSectionedAnimatedReloadDataSource.swift in Sources */,
@@ -487,7 +524,7 @@
 				C8AAC3892109CD5300AFBFC6 /* Int+Convenient.swift in Sources */,
 				C8AAC36C2109CD5300AFBFC6 /* Kingfisher+RxConvenient.swift in Sources */,
 				C8AAC3A82109D63000AFBFC6 /* RxBasicTableView.swift in Sources */,
-				C8AAC31E2109CC5400AFBFC6 /* ViewController.swift in Sources */,
+				C82670FB210AAD53008DE959 /* TableListViewReactor.swift in Sources */,
 				C8AAC3802109CD5300AFBFC6 /* RxBasicRefreshReactor.swift in Sources */,
 				C8AAC3972109CD5300AFBFC6 /* LogHelper.swift in Sources */,
 				C8AAC36B2109CD5300AFBFC6 /* UITextField+RxConvenient.swift in Sources */,
@@ -511,17 +548,20 @@
 				C8AAC39D2109CD5300AFBFC6 /* ViewConfigurable.swift in Sources */,
 				C8AAC36E2109CD5300AFBFC6 /* Photos+RxConvenient.swift in Sources */,
 				C8AAC38D2109CD5300AFBFC6 /* UIColor+Convenient.swift in Sources */,
+				C82670FA210AAD53008DE959 /* TableListViewController.swift in Sources */,
 				C8AAC3772109CD5300AFBFC6 /* RxBasicHeaderRefreshView.swift in Sources */,
 				C8AAC3922109CD5300AFBFC6 /* EasyCallHelper.swift in Sources */,
 				C8AAC37D2109CD5300AFBFC6 /* RxCollectionViewLayoutSource.swift in Sources */,
 				C8AAC31C2109CC5400AFBFC6 /* AppDelegate.swift in Sources */,
 				C8AAC3982109CD5300AFBFC6 /* Mappable.swift in Sources */,
 				C8AAC3A62109D58D00AFBFC6 /* UIScrollView+Convenient.swift in Sources */,
+				C8267108210AB4CB008DE959 /* CustomTableView.swift in Sources */,
 				C8AAC36D2109CD5300AFBFC6 /* UIScrollView+RxConvenient.swift in Sources */,
 				C8AAC39E2109CD5300AFBFC6 /* Nibloadable.swift in Sources */,
 				C8AAC39F2109CD5300AFBFC6 /* GIFImage.swift in Sources */,
 				C8AAC3792109CD5300AFBFC6 /* RxBasicCollectionViewReactor.swift in Sources */,
 				C8AAC3822109CD5300AFBFC6 /* RxBasicListModel.swift in Sources */,
+				C82670F9210AAD53008DE959 /* TestTableViewCellReactor.swift in Sources */,
 				C8AAC3722109CD5300AFBFC6 /* UIView+RxConvenient.swift in Sources */,
 				C8AAC39B2109CD5300AFBFC6 /* RxCellSizeLayoutable.swift in Sources */,
 			);

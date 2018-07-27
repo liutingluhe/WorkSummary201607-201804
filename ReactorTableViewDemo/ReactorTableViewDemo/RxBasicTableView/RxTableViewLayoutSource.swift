@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 /// 列表布局配置对象，用来配置列表布局属性
 open class RxTableViewLayoutSource {
     public typealias HeightForRowFactory = (IndexPath) -> CGFloat
@@ -16,6 +17,9 @@ open class RxTableViewLayoutSource {
     open var heightForRow: Layout<IndexPath, CGFloat> = Layout<IndexPath, CGFloat>()
     open var heightForHeader: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
     open var heightForFooter: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
+    open var estimatedHeightForRow: Layout<IndexPath, CGFloat> = Layout<IndexPath, CGFloat>()
+    open var estimatedHeightForHeader: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
+    open var estimatedHeightForFooter: Layout<Int, CGFloat>  = Layout<Int, CGFloat>()
     
     /// 配置 Cell 大小
     open var configureHeightForRow: HeightForRowFactory? {
@@ -40,6 +44,33 @@ open class RxTableViewLayoutSource {
         didSet {
             if let configureFooterHeight = configureFooterHeight {
                 heightForFooter.factory = configureFooterHeight
+            }
+        }
+    }
+    
+    /// 配置 Cell 大小
+    open var configureEstimatedHeightForRow: HeightForRowFactory? {
+        didSet {
+            if let configureEstimatedHeightForRow = configureEstimatedHeightForRow {
+                estimatedHeightForRow.factory = configureEstimatedHeightForRow
+            }
+        }
+    }
+    
+    /// 配置顶部控件大小
+    open var configureHeaderEstimatedHeight: SectionHeightFactory? {
+        didSet {
+            if let configureHeaderEstimatedHeight = configureHeaderEstimatedHeight {
+                estimatedHeightForHeader.factory = configureHeaderEstimatedHeight
+            }
+        }
+    }
+    
+    /// 配置底部控件大小
+    open var configureFooterEstimatedHeight: SectionHeightFactory? {
+        didSet {
+            if let configureFooterEstimatedHeight = configureFooterEstimatedHeight {
+                estimatedHeightForFooter.factory = configureFooterEstimatedHeight
             }
         }
     }

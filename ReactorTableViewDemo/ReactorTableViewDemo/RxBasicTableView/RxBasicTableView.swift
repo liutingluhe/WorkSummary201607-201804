@@ -338,6 +338,23 @@ open class RxBasicTableView: UITableView, UITableViewDelegate {
         if self.layoutSource.configureFooterHeight == nil {
             self.layoutSource.configureFooterHeight = { reactor.getFooterHeight(section: $0) }
         }
+        if self.layoutSource.configureEstimatedHeightForRow == nil {
+            self.layoutSource.configureEstimatedHeightForRow = { reactor.getRowHeight(indexPath: $0) }
+        }
+        if self.layoutSource.configureHeaderEstimatedHeight == nil {
+            self.layoutSource.configureHeaderEstimatedHeight = { reactor.getHeaderHeight(section: $0) }
+        }
+        if self.layoutSource.configureFooterEstimatedHeight == nil {
+            self.layoutSource.configureFooterEstimatedHeight = { reactor.getFooterHeight(section: $0) }
+        }
+        
+        reactor.dataSource.titleForHeaderInSection = { _, _ in
+            return " "
+        }
+        
+        reactor.dataSource.titleForFooterInSection = { _, _ in
+            return " "
+        }
     }
     
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -345,11 +362,27 @@ open class RxBasicTableView: UITableView, UITableViewDelegate {
     }
     
     open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return layoutSource.heightForHeader.at(section)
+        let height = layoutSource.heightForHeader.at(section)
+        return height == 0 ? 0.01 : height
     }
     
     open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return layoutSource.heightForFooter.at(section)
+        let height = layoutSource.heightForFooter.at(section)
+        return height == 0 ? 0.01 : height
+    }
+    
+    open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return layoutSource.estimatedHeightForRow.at(indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        let height = layoutSource.estimatedHeightForHeader.at(section)
+        return height == 0 ? 0.01 : height
+    }
+    
+    open func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+        let height = layoutSource.estimatedHeightForFooter.at(section)
+        return height == 0 ? 0.01 : height
     }
     
     // MARK: - 滑动事件

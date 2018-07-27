@@ -75,7 +75,7 @@ open class RxTableViewSectionedAnimatedReloadDataSource<S: AnimatableSectionMode
     
     open func tableView(_ tableView: UITableView, observedEvent: Event<Element>) {
         
-        if !throttledEventDidSet {
+        if self.isAnimated && !throttledEventDidSet {
             throttledEventDidSet = true
             self.partialUpdateEvent
                 .observeOn(MainScheduler.asyncInstance)
